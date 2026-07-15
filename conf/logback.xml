@@ -2,7 +2,7 @@
 <configuration>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>logs/sdec-threadinfo-api-alpha.log</file>
+        <file>logs/sdec-threadinfo-api.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%date{ISO8601} level=[%level] logger=[%logger] thread=[%thread] message=[%message] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
         </encoder>
@@ -22,17 +22,17 @@
     </appender>
 
 
-    <logger name="com.google.inject" level="INFO"/>
+    <logger name="com.google.inject" level="WARN"/>
 
-    <logger name="uk.gov" level="INFO"/>
+    <logger name="uk.gov" level="WARN"/>
 
-    <logger name="application" level="DEBUG"/>
+    <logger name="application" level="WARN"/>
 
-    <logger name="connector" level="TRACE">
+    <logger name="connector" level="WARN">
         <appender-ref ref="STDOUT"/>
     </logger>
 
-    <root level="INFO">
+    <root level="WARN">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>

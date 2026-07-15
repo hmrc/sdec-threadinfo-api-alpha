@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.config
+package uk.gov.hmrc.sdecthreadinfoapialpha.model
 
-import play.api.Configuration
+import play.api.libs.json.{Format, Json}
 
-import javax.inject.{Inject, Singleton}
+import java.time.{LocalDate, LocalDateTime}
 
-@Singleton
-class AppConfig @Inject() (config: Configuration):
+case class ThreadReference(
+    id: String,
+    threadReference: String,
+    status: ThreadStatus,
+    createdTimeStamp: LocalDateTime,
+    lastUpdatedTimeStamp: LocalDateTime,
+    threadExpiryDate: LocalDate,
+    associatedCaseReference: String
+)
 
-    val appName: String = config.get[String]("appName")
+object ThreadReference {
+  implicit val format: Format[ThreadReference] = Json.format[ThreadReference]
+}

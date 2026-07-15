@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.config
+package uk.gov.hmrc.sdecthreadinfoapialpha.exceptions
 
-import play.api.Configuration
-
-import javax.inject.{Inject, Singleton}
-
-@Singleton
-class AppConfig @Inject() (config: Configuration):
-
-    val appName: String = config.get[String]("appName")
+case class ThreadReferenceNotFoundException(id: String)
+    extends RuntimeException(s"Thread reference [$id] not found")
