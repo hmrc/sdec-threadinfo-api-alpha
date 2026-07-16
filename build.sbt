@@ -1,22 +1,62 @@
+import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings
 
-ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "3.3.6"
-ThisBuild / scalacOptions += "-Wconf:msg=Flag.*repeatedly:s"
+val appName = "sdec-threadinfo-api-alpha"
 
-lazy val microservice = Project("sdec-threadinfo-api-alpha", file("."))
+ThisBuild / majorVersion := 0
+
+lazy val compilerSettings = Seq(
+  scalaVersion := "3.3.7",
+  scalacOptions += "-Wconf:src=routes/.*:s",
+  scalacOptions += "-Wconf:msg=unused import&src=html/.*:s"
+)
+
+lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
-  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .disablePlugins(
+    JUnitXmlReportPlugin
+  )
   .settings(
+    Compile / scalafmtOnCompile := true,
+    Test / scalafmtOnCompile    := true,
+    PlayKeys.playDefaultPort    := 4501,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
-    // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
-    // suppress warnings in generated routes files
-    scalacOptions += "-Wconf:src=routes/.*:s",
+    compilerSettings
+  )
+  .settings(
+    Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
+    Test / unmanagedSourceDirectories := (Test / baseDirectory)(base =>
+      Seq(base / "test", base / "test-common")
+    ).value,
+    Test / unmanagedResourceDirectories := Seq(
+      baseDirectory.value / "test-resources"
+    )
   )
   .settings(CodeCoverageSettings.settings: _*)
 
 lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
-  .settings(DefaultBuildSettings.itSettings())
+  .settings(
+    DefaultBuildSettings.itSettings(),
+    compilerSettings
+  )
   .settings(libraryDependencies ++= AppDependencies.it)
+
+inThisBuild(
+  List(
+    semanticdbEnabled := true,
+    semanticdbVersion := scalafixSemanticdb.revision
+  )
+)
+
+addCommandAlias(
+  "prePrChecks",
+  "; scalafmtCheckAll; scalafmtSbtCheck; scalafixAll --check"
+)
+addCommandAlias(
+  "checkCodeCoverage",
+  "; clean; coverage; test; it/test; coverageReport"
+)
+addCommandAlias("lint", "; scalafmtAll; scalafmtSbt; scalafixAll")
+addCommandAlias("prePush", "; reload; clean; compile; test; it/test; lint;")

@@ -14,13 +14,29 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.config
+package uk.gov.hmrc.sdecthreadinfoapialpha.model
 
-import play.api.Configuration
+import play.api.libs.json.*
 
-import javax.inject.{Inject, Singleton}
+enum ThreadStatus {
+  case Draft
+  case Active
+  case Closed
+  case Archived
+}
 
-@Singleton
-class AppConfig @Inject() (config: Configuration):
+object ThreadStatus {
 
-    val appName: String = config.get[String]("appName")
+  given Format[ThreadStatus] = Format(
+    Reads {
+      case JsString(value) =>
+        ThreadStatus.values
+          .find(_.toString == value)
+          .map(JsSuccess(_))
+          .getOrElse(JsError(s"Unknown ThreadStatus: $value"))
+
+      case _ => JsError("ThreadStatus must be a string")
+    },
+    Writes(status => JsString(status.toString))
+  )
+}
