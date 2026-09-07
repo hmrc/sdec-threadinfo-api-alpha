@@ -22,7 +22,7 @@ import play.api.http.Status
 import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.{InvalidThreadReferenceException, ThreadReferenceNotFoundException}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.{ThreadReference, ThreadStatus}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.*
 import uk.gov.hmrc.sdecthreadinfoapialpha.service.ThreadReferenceServiceAlgebra
 
 import java.time.{LocalDate, LocalDateTime}
@@ -31,14 +31,25 @@ import scala.concurrent.{ExecutionContext, Future}
 class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
 
   private val threadReference = ThreadReference(
-    id = "123456ABCDEF",
-    recipientName = Some("someName"),
-    message = Some("someMessage"),
+    id = "THREAD-001",
     status = ThreadStatus.Active,
     createdTimeStamp = LocalDateTime.parse("2026-06-30T11:05:23"),
     lastUpdatedTimeStamp = LocalDateTime.parse("2026-07-02T08:05:23"),
     threadExpiryDate = LocalDate.parse("2026-07-30"),
-    associatedCaseReference = "CASE-001"
+    associatedCaseReference = "CASE-001",
+    recipientDetails = RecipientDetails(
+      firstName = "John",
+      lastName = "Smith",
+      email = "JohnS@hotmail.com",
+      phoneNumber = "07123456789",
+      nationalInsuranceNumber = "QQQQQQQQC",
+      hasRelatedCase = false,
+      caseReferenceNumber = None
+    ),
+    threadDetails = ThreadDetails(
+      message = "Enter default response message",
+      responseDate = LocalDate.now().plusDays(7)
+    )
   )
 
   private val threadReferenceService = new ThreadReferenceServiceAlgebra {

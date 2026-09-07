@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.repository
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.ThreadReference
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.{CreateThreadRequest, ThreadReference}
 
 import scala.concurrent.Future
 
@@ -25,4 +25,6 @@ trait ThreadReferenceRepositoryAlgebra {
   def insertThreadReference(threadRef: ThreadReference): Future[Unit]
 
   def getByThreadReference(id: String): Future[ThreadReference]
+
+  def createThread(request: CreateThreadRequest): Future[ThreadReference]
 }

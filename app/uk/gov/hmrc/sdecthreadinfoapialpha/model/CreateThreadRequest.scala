@@ -16,21 +16,14 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.model
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, OFormat}
 
-import java.time.{LocalDate, LocalDateTime}
-
-case class ThreadReference(
-  id:                      String,
-  status:                  ThreadStatus,
-  createdTimeStamp:        LocalDateTime,
-  lastUpdatedTimeStamp:    LocalDateTime,
-  threadExpiryDate:        LocalDate,
-  associatedCaseReference: String,
-  recipientDetails:        RecipientDetails,
-  threadDetails:           ThreadDetails
+final case class CreateThreadRequest(
+  recipientDetails: RecipientDetails,
+  threadDetails:    ThreadDetails
 )
 
-object ThreadReference {
-  implicit val format: Format[ThreadReference] = Json.format[ThreadReference]
+object CreateThreadRequest {
+  implicit val format: OFormat[CreateThreadRequest] =
+    Json.format[CreateThreadRequest]
 }

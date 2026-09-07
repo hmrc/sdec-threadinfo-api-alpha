@@ -3,3 +3,5 @@
 GET        /thread-reference/:threadId  uk.gov.hmrc.sdecthreadinfoapialpha.controllers.ThreadReferenceController.getThreadReference(threadId: String)
 
 GET        /threads        uk.gov.hmrc.sdecthreadinfoapialpha.controllers.ThreadSummaryController.getAll()
+
+POST       /thread-create  uk.gov.hmrc.sdecthreadinfoapialpha.controllers.ThreadCreateController.createThread()
