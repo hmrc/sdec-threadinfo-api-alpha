@@ -34,10 +34,10 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
 
   seedDummyData()
 
-  private def seedDummyData(): Unit =
+  private def seedDummyData(): Unit = {
     insertThreadReference(
       ThreadReference(
-        id = "123456ABCDEF",
+        id = "THREAD1000AA",
         status = ThreadStatus.Active,
         createdTimeStamp = LocalDateTime.now().minusDays(2),
         lastUpdatedTimeStamp = LocalDateTime.now().minusHours(3),
@@ -46,7 +46,7 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         recipientDetails = RecipientDetails(
           firstName = "John",
           lastName = "Smith",
-          email = "JohnS@hotmail.com",
+          email = "some@example.com",
           phoneNumber = "07123456789",
           nationalInsuranceNumber = "QQQQQQQQC",
           hasRelatedCase = false,
@@ -58,6 +58,31 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         )
       )
     )
+
+    insertThreadReference(
+      ThreadReference(
+        id = "THREAD2000BB",
+        status = ThreadStatus.Active,
+        createdTimeStamp = LocalDateTime.now().minusDays(2),
+        lastUpdatedTimeStamp = LocalDateTime.now().minusHours(3),
+        threadExpiryDate = LocalDate.now().plusDays(28),
+        associatedCaseReference = "CASE-002",
+        recipientDetails = RecipientDetails(
+          firstName = "",
+          lastName = "",
+          email = "some@example.com",
+          phoneNumber = "07123456789",
+          nationalInsuranceNumber = "QQQQQQQQC",
+          hasRelatedCase = false,
+          caseReferenceNumber = None
+        ),
+        threadDetails = ThreadDetails(
+          message = "",
+          responseDate = LocalDate.now().plusDays(7)
+        )
+      )
+    )
+  }
 
   def insertThreadReference(threadRef: ThreadReference): Future[Unit] = {
     threadReferenceCache.put(threadRef.id, threadRef)
