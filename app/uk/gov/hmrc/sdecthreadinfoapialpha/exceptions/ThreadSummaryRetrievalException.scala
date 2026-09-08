@@ -16,4 +16,5 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.exceptions
 
-case class ThreadSummaryRetrievalException(cause: Throwable) extends RuntimeException(s"Failed to retrieve thread summaries", cause)
+case class ThreadSummaryRetrievalException(cause: Throwable)
+    extends RuntimeException(s"Failed to retrieve thread summaries", cause)
