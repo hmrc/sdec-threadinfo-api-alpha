@@ -46,7 +46,7 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         recipientDetails = RecipientDetails(
           firstName = "John",
           lastName = "Smith",
-          email = "some@email.com",
+          email = "some@example.com",
           phoneNumber = "07123456789",
           nationalInsuranceNumber = "QQQQQQQQC",
           hasRelatedCase = false,
@@ -70,7 +70,7 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         recipientDetails = RecipientDetails(
           firstName = "",
           lastName = "",
-          email = "some@email.com",
+          email = "some@example.com",
           phoneNumber = "07123456789",
           nationalInsuranceNumber = "QQQQQQQQC",
           hasRelatedCase = false,

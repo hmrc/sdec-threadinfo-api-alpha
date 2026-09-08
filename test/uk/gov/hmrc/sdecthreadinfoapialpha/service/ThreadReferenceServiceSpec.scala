@@ -39,7 +39,7 @@ class ThreadReferenceServiceSpec extends AnyWordSpec with Matchers {
     recipientDetails = RecipientDetails(
       firstName = "John",
       lastName = "Smith",
-      email = "JohnS@hotmail.com",
+      email = "some@example.com",
       phoneNumber = "07123456789",
       nationalInsuranceNumber = "QQQQQQQQC",
       hasRelatedCase = false,
