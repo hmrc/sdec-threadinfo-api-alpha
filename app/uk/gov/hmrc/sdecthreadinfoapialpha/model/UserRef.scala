@@ -18,14 +18,11 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.model
 
 import play.api.libs.json.{Json, OFormat}
 
-final case class CreateThreadRequest(
-  threadCreator:    UserRef,
-  threadOwner:      Option[UserRef],
-  owningTeam:       Team,
-  recipientDetails: RecipientDetails,
-  threadDetails:    ThreadDetails
+final case class UserRef(
+  id:   String,
+  name: String
 )
 
-object CreateThreadRequest {
-  given format: OFormat[CreateThreadRequest] = Json.format[CreateThreadRequest]
+object UserRef {
+  given format: OFormat[UserRef] = Json.format[UserRef]
 }
