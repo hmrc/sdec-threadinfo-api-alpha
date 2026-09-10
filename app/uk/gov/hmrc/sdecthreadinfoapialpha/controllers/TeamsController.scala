@@ -19,7 +19,7 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.controllers
 import jakarta.inject.Inject
 import play.api.Logging
 import play.api.libs.json.*
-import play.api.mvc.{Action, AnyContent, ControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import uk.gov.hmrc.sdecthreadinfoapialpha.stubs.TeamsRepository
 

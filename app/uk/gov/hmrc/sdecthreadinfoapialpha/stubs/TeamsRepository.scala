@@ -17,6 +17,7 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.stubs
 
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
+
 import javax.inject.Singleton
 
 @Singleton
