@@ -46,4 +46,14 @@ class TeamsController @Inject() (
   def getAll: Action[AnyContent] = Action {
     Ok(Json.toJson(teamsRepository.getAll))
   }
+
+  def getTeamByRole(role: String): Action[AnyContent] = Action {
+    teamsRepository.getTeamByRole(role) match {
+      case Some(team) =>
+        Ok(Json.toJson(team))
+      case None =>
+        logger.warn(s"No team found for stride role $role")
+        NotFound(Json.obj("message" -> s"No team found for stride role $role"))
+    }
+  }
 }

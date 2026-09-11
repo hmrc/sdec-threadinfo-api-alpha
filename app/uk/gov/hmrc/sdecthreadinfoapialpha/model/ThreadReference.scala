@@ -29,7 +29,7 @@ case class ThreadReference(
   associatedCaseReference: String,
   threadCreator:           UserRef,
   threadOwner:             Option[UserRef],
-  owningTeam:              Team,
+  owningTeam:              TeamRef,
   recipientDetails:        RecipientDetails,
   threadDetails:           ThreadDetails
 )

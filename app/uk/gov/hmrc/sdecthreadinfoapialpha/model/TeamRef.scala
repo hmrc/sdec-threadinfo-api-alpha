@@ -18,13 +18,8 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.model
 
 import play.api.libs.json.{Json, OFormat}
 
-final case class Team(
-  id:         String,
-  name:       String,
-  taskBased:  Boolean,
-  strideRole: String
-)
+final case class TeamRef(id: String, name: String)
 
-object Team {
-  given format: OFormat[Team] = Json.format[Team]
+object TeamRef {
+  given format: OFormat[TeamRef] = Json.format[TeamRef]
 }

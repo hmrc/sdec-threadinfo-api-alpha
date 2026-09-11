@@ -24,10 +24,14 @@ import javax.inject.Singleton
 class TeamsRepository {
 
   private val teams = Seq(
-    Team("TEAM-001", "Child Benefits", taskBased = true),
-    Team("TEAM-002", "Pensions", taskBased = false)
+    Team("TEAM-001", "Child Benefits", taskBased = false, strideRole = "sdec_child_benefits"),
+    Team("TEAM-002", "Pensions", taskBased = true, strideRole = "sdec_pensions")
   )
 
   def getTeam(id: String): Option[Team] = teams.find(_.id == id)
-  def getAll:              Seq[Team]    = teams
+
+  def getTeamByRole(role: String): Option[Team] =
+    teams.find(_.strideRole.equalsIgnoreCase(role))
+
+  def getAll: Seq[Team] = teams
 }

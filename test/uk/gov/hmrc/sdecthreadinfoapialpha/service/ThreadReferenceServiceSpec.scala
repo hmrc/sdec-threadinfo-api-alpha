@@ -38,7 +38,7 @@ class ThreadReferenceServiceSpec extends AnyWordSpec with Matchers {
     associatedCaseReference = "CASE-001",
     threadCreator = UserRef("someId", "someName"),
     threadOwner = None,
-    owningTeam = Team("someTeamId", "someTeamName", taskBased = true),
+    owningTeam = TeamRef("someTeamId", "someTeamName"),
     recipientDetails = RecipientDetails(
       firstName = "John",
       lastName = "Smith",
