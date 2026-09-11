@@ -43,6 +43,9 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         lastUpdatedTimeStamp = LocalDateTime.now().minusHours(3),
         threadExpiryDate = LocalDate.now().plusDays(28),
         associatedCaseReference = "CASE-001",
+        threadCreator = UserRef("Int-1a2b3c4d-0000-0000-0000-000000000001", "Jane Smith"),
+        threadOwner = None,
+        owningTeam = TeamRef("TEAM-001", "Child Benefits"),
         recipientDetails = RecipientDetails(
           firstName = "John",
           lastName = "Smith",
@@ -67,6 +70,9 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         lastUpdatedTimeStamp = LocalDateTime.now().minusHours(3),
         threadExpiryDate = LocalDate.now().plusDays(28),
         associatedCaseReference = "CASE-002",
+        threadCreator = UserRef("Int-1a2b3c4d-0000-0000-0000-000000000001", "Jane Smith"),
+        threadOwner = Some(UserRef("Int-1a2b3c4d-0000-0000-0000-000000000002", "Phil Marty")),
+        owningTeam = TeamRef("TEAM-002", "Pensions"),
         recipientDetails = RecipientDetails(
           firstName = "",
           lastName = "",
@@ -111,6 +117,9 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         lastUpdatedTimeStamp = now,
         threadExpiryDate = request.threadDetails.responseDate,
         associatedCaseReference = request.recipientDetails.caseReferenceNumber.getOrElse(""),
+        threadCreator = request.threadCreator,
+        threadOwner = request.threadOwner,
+        owningTeam = request.owningTeam,
         request.recipientDetails,
         request.threadDetails
       )

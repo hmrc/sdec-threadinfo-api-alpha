@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.stubs
 
-import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
 
-final case class CreateThreadRequest(
-  threadCreator:    UserRef,
-  threadOwner:      Option[UserRef],
-  owningTeam:       TeamRef,
-  recipientDetails: RecipientDetails,
-  threadDetails:    ThreadDetails
-)
+import javax.inject.Singleton
 
-object CreateThreadRequest {
-  given format: OFormat[CreateThreadRequest] = Json.format[CreateThreadRequest]
+@Singleton
+class TeamsRepository {
+
+  private val teams = Seq(
+    Team("TEAM-001", "Child Benefits", taskBased = false, strideRole = "sdec_child_benefits"),
+    Team("TEAM-002", "Pensions", taskBased = true, strideRole = "sdec_pensions")
+  )
+
+  def getTeam(id: String): Option[Team] = teams.find(_.id == id)
+
+  def getTeamByRole(role: String): Option[Team] =
+    teams.find(_.strideRole.equalsIgnoreCase(role))
+
+  def getAll: Seq[Team] = teams
 }

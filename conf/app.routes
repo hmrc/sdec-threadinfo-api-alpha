@@ -5,3 +5,6 @@ GET        /thread-reference/:threadId  uk.gov.hmrc.sdecthreadinfoapialpha.contr
 GET        /threads        uk.gov.hmrc.sdecthreadinfoapialpha.controllers.ThreadSummaryController.getAll()
 
 POST       /thread-create  uk.gov.hmrc.sdecthreadinfoapialpha.controllers.ThreadCreateController.createThread()
+
+GET        /teams/by-role/:role    uk.gov.hmrc.sdecthreadinfoapialpha.controllers.TeamsController.getTeamByRole(role: String)
+GET        /teams/:teamId      uk.gov.hmrc.sdecthreadinfoapialpha.controllers.TeamsController.getTeam(teamId: String)
