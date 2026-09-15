@@ -39,7 +39,7 @@ class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
     associatedCaseReference = "CASE-001",
     threadCreator = UserRef("someId", "someName"),
     threadOwner = None,
-    owningTeam = TeamRef("someTeamId", "someTeamName"),
+    owningTeam = Team("someTeamId", "someTeamName", false, "some_group"),
     recipientDetails = RecipientDetails(
       firstName = "John",
       lastName = "Smith",
