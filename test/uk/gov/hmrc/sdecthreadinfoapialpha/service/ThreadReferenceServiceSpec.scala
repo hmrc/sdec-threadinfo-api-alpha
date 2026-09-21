@@ -36,6 +36,9 @@ class ThreadReferenceServiceSpec extends AnyWordSpec with Matchers {
     lastUpdatedTimeStamp = LocalDateTime.parse("2026-07-02T08:05:23"),
     threadExpiryDate = LocalDate.parse("2026-07-30"),
     associatedCaseReference = "CASE-001",
+    threadCreator = "PID001",
+    threadOwner = Some("PID001"),
+    owningTeam = Team("Team A", taskBased = true),
     recipientDetails = RecipientDetails(
       firstName = "John",
       lastName = "Smith",

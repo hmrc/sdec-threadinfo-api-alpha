@@ -27,10 +27,13 @@ case class ThreadReference(
   lastUpdatedTimeStamp:    LocalDateTime,
   threadExpiryDate:        LocalDate,
   associatedCaseReference: String,
+  threadCreator:           String,
+  threadOwner:             Option[String],
+  owningTeam:              Team,
   recipientDetails:        RecipientDetails,
   threadDetails:           ThreadDetails
 )
 
 object ThreadReference {
-  implicit val format: Format[ThreadReference] = Json.format[ThreadReference]
+  given Format[ThreadReference] = Json.format[ThreadReference]
 }

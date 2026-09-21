@@ -43,6 +43,9 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         lastUpdatedTimeStamp = LocalDateTime.now().minusHours(3),
         threadExpiryDate = LocalDate.now().plusDays(28),
         associatedCaseReference = "CASE-001",
+        threadCreator = "PID001",
+        threadOwner = Some("PID001"),
+        owningTeam = Team("Team A", taskBased = true),
         recipientDetails = RecipientDetails(
           firstName = "John",
           lastName = "Smith",
@@ -67,6 +70,9 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         lastUpdatedTimeStamp = LocalDateTime.now().minusHours(3),
         threadExpiryDate = LocalDate.now().plusDays(28),
         associatedCaseReference = "CASE-002",
+        threadCreator = "PID002",
+        threadOwner = None,
+        owningTeam = Team("Team B", taskBased = false),
         recipientDetails = RecipientDetails(
           firstName = "",
           lastName = "",
@@ -111,8 +117,11 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         lastUpdatedTimeStamp = now,
         threadExpiryDate = request.threadDetails.responseDate,
         associatedCaseReference = request.recipientDetails.caseReferenceNumber.getOrElse(""),
-        request.recipientDetails,
-        request.threadDetails
+        threadCreator = request.threadCreator,
+        threadOwner = Option.when(request.owningTeam.taskBased)(request.threadCreator),
+        owningTeam = request.owningTeam,
+        recipientDetails = request.recipientDetails,
+        threadDetails = request.threadDetails
       )
 
     threadReferenceCache.put(
