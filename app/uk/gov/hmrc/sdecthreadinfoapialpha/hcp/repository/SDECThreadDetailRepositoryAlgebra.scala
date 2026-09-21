@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.service
+package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThread
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThreadDetail
 
 import scala.concurrent.Future
 
-trait ThreadReferenceServiceAlgebra {
+trait SDECThreadDetailRepositoryAlgebra:
 
-  def getThreadInfoByThreadId(threadId: String): Future[SDECThread]
+  def insert(detail: SDECThreadDetail): Future[SDECThreadDetail]
 
-}
+  def update(detail: SDECThreadDetail): Future[SDECThreadDetail]
+
+  def getById(id: Long): Future[Option[SDECThreadDetail]]

@@ -14,14 +14,30 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.service
+package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThread
+import play.api.libs.json.*
 
-import scala.concurrent.Future
+enum SDECThreadStatus {
 
-trait ThreadReferenceServiceAlgebra {
+  case Draft
+  case Active
+  case Closed
+  case Archived
+}
 
-  def getThreadInfoByThreadId(threadId: String): Future[SDECThread]
+object SDECThreadStatus {
 
+  given Format[SDECThreadStatus] = Format(
+    Reads {
+      case JsString(value) =>
+        SDECThreadStatus.values
+          .find(_.toString == value)
+          .map(JsSuccess(_))
+          .getOrElse(JsError(s"Unknown SDECThreadStatus: $value"))
+
+      case _ => JsError("SDECThreadStatus must be a string")
+    },
+    Writes(status => JsString(status.toString))
+  )
 }

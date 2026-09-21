@@ -18,24 +18,28 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
 import play.api.Logging
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.InvalidThreadReferenceException
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.ThreadReference
-import uk.gov.hmrc.sdecthreadinfoapialpha.repository.ThreadReferenceRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThread
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECThreadRepositoryAlgebra
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ThreadReferenceService @Inject() (
-  threadReferenceRepository: ThreadReferenceRepositoryAlgebra
-) extends ThreadReferenceServiceAlgebra
+  threadReferenceRepository: SDECThreadRepositoryAlgebra
+)(using ec: ExecutionContext)
+    extends ThreadReferenceServiceAlgebra
     with Logging {
 
   private val threadReferencePattern = "^[A-Z0-9]{12}$".r
 
-  override def getThreadInfoByThreadId(threadId: String): Future[ThreadReference] = {
+  override def getThreadInfoByThreadId(threadId: String): Future[SDECThread] = {
     logger.info(s"Checking if $threadId exists in the database")
     if threadReferencePattern.matches(threadId) then {
-      threadReferenceRepository.getByThreadReference(threadId)
+      threadReferenceRepository.getByReference(threadId).map {
+        case Some(value) => value
+        case None        => throw InvalidThreadReferenceException(threadId)
+      }
     } else {
       Future.failed(InvalidThreadReferenceException(threadId))
     }

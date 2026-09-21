@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.service
+package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThread
+import slick.jdbc.H2Profile.api.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThreadStatus
 
-import scala.concurrent.Future
+object SDECThreadMappings:
 
-trait ThreadReferenceServiceAlgebra {
-
-  def getThreadInfoByThreadId(threadId: String): Future[SDECThread]
-
-}
+  given BaseColumnType[SDECThreadStatus] =
+    MappedColumnType.base[SDECThreadStatus, String](
+      _.toString,
+      value =>
+        SDECThreadStatus.values
+          .find(_.toString == value)
+          .getOrElse(
+            throw new IllegalArgumentException(
+              s"Unknown SDECThreadStatus: $value"
+            )
+          )
+    )

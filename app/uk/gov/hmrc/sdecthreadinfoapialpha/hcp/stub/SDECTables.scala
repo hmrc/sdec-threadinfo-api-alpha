@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.service
+package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.stub
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThread
+import slick.jdbc.H2Profile.api.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping.{SDECRecipientTable, SDECThreadDetailTable, SDECThreadTable}
 
-import scala.concurrent.Future
+object SDECTables:
 
-trait ThreadReferenceServiceAlgebra {
+  val threads: TableQuery[SDECThreadTable] =
+    TableQuery[SDECThreadTable]
 
-  def getThreadInfoByThreadId(threadId: String): Future[SDECThread]
+  val threadDetails: TableQuery[SDECThreadDetailTable] =
+    TableQuery[SDECThreadDetailTable]
 
-}
+  val recipients: TableQuery[SDECRecipientTable] =
+    TableQuery[SDECRecipientTable]

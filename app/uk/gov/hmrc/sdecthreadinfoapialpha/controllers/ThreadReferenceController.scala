@@ -22,7 +22,6 @@ import play.api.libs.json.*
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.{InvalidThreadReferenceException, ThreadReferenceNotFoundException}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.ThreadReference
 import uk.gov.hmrc.sdecthreadinfoapialpha.service.ThreadReferenceServiceAlgebra
 
 import javax.inject.Singleton

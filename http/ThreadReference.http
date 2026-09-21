@@ -1,0 +1,3 @@
+### GET request to example server
+GET http://localhost:4501/sdec-threadinfo-api-alpha/thread-reference/THREAD1000AA
+###

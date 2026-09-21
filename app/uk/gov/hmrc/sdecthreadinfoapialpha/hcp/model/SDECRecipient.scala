@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.service
+package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThread
+import play.api.libs.json.{Json, OFormat}
 
-import scala.concurrent.Future
+case class SDECRecipient(
+  id:                      Long,
+  sdecThreadId:            Long,
+  firstName:               String,
+  lastName:                String,
+  email:                   String,
+  phoneNumber:             String,
+  nationalInsuranceNumber: String
+)
 
-trait ThreadReferenceServiceAlgebra {
-
-  def getThreadInfoByThreadId(threadId: String): Future[SDECThread]
-
+object SDECRecipient {
+  given OFormat[SDECRecipient] = Json.format[SDECRecipient]
 }
