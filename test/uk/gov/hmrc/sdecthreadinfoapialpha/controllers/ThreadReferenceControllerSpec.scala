@@ -22,15 +22,28 @@ import play.api.http.Status
 import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.{InvalidThreadReferenceException, ThreadReferenceNotFoundException}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{RecipientDetails, ThreadDetails, ThreadReference, ThreadStatus}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThread
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadStatus.Active
 import uk.gov.hmrc.sdecthreadinfoapialpha.service.ThreadReferenceServiceAlgebra
 
 import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.{ExecutionContext, Future}
 
 class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
+  private val thread = SDECThread(
+    id = 1L,
+    reference = "123456789012",
+    status = Active,
+    createdTimeStamp = LocalDateTime.parse("2026-06-30T11:05:23"),
+    lastUpdatedTimeStamp = LocalDateTime.parse("2026-07-02T08:05:23"),
+    threadExpiryDate = LocalDate.parse("2026-07-30"),
+    caseReference = "CASE-001",
+    email = "some@example.com",
+    nino = "QQQQQQQQC"
+  )
 
-  private val threadReference = ThreadReference(
+  ThreadReference(
     id = "THREAD-001",
     status = ThreadStatus.Active,
     createdTimeStamp = LocalDateTime.parse("2026-06-30T11:05:23"),
@@ -53,9 +66,9 @@ class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
   )
 
   private val threadReferenceService = new ThreadReferenceServiceAlgebra {
-    override def getThreadInfoByThreadId(threadId: String): Future[ThreadReference] =
+    override def getThreadInfoByThreadId(threadId: String): Future[SDECThread] =
       threadId match {
-        case "123456ABCDEF" => Future.successful(threadReference)
+        case "123456ABCDEF" => Future.successful(thread)
         case "ZZZZZZZZZZZZ" =>
           Future.failed(ThreadReferenceNotFoundException(threadId))
         case "999" => Future.failed(InvalidThreadReferenceException("999"))
@@ -76,9 +89,9 @@ class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
       status(result) shouldBe Status.OK
 
       val json           = contentAsJson(result)
-      val returnedObject = json.as[ThreadReference]
+      val returnedObject = json.as[SDECThread]
 
-      returnedObject shouldBe threadReference
+      returnedObject shouldBe thread
     }
   }
 

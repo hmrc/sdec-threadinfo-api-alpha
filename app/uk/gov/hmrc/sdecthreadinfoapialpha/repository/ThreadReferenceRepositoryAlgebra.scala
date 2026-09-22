@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.repository
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.{CreateThreadRequest, ThreadReference}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, ThreadReference}
 
 import scala.concurrent.Future
 

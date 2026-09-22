@@ -18,7 +18,7 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.{CreateThreadRequest, CreateThreadResponse}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, CreateThreadResponse}
 import uk.gov.hmrc.sdecthreadinfoapialpha.repository.ThreadReferenceRepositoryAlgebra
 
 import javax.inject.Inject

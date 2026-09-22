@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.stubs
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.ThreadSummary
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadSummary
 
 import java.time.LocalDate
 import javax.inject.Singleton

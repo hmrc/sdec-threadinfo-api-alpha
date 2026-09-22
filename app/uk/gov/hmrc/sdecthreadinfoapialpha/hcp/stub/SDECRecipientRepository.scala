@@ -19,8 +19,8 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.stub
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.H2Profile
 import slick.jdbc.H2Profile.api.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECRecipient
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECRecipientRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,11 +46,9 @@ class SDECRecipientRepository @Inject() (
       SDECTables.recipients
         .filter(_.id === recipient.id)
         .update(recipient)
-    ).map{rowsUpdated =>
-      if rowsUpdated == 1 then
-        recipient
-      else
-        throw new NoSuchElementException(s"SDECThread with id ${recipient.id} was not found")
+    ).map { rowsUpdated =>
+      if rowsUpdated == 1 then recipient
+      else throw new NoSuchElementException(s"SDECThread with id ${recipient.id} was not found")
     }
 
   override def getById(id: Long): Future[Option[SDECRecipient]] =

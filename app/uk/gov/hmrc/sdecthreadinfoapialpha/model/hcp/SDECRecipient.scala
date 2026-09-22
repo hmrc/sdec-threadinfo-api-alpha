@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 
 import play.api.libs.json.{Json, OFormat}
 
-import java.time.{LocalDate, LocalDateTime}
-
-case class SDECThread(
-  id:                   Long,
-  reference:            String,
-  status:               SDECThreadStatus,
-  createdTimeStamp:     LocalDateTime,
-  lastUpdatedTimeStamp: LocalDateTime,
-  threadExpiryDate:     LocalDate,
-  caseReference:        String,
-  email:                String,
-  nino:                 String
+case class SDECRecipient(
+  id:                      Long,
+  sdecThreadId:            Long,
+  firstName:               String,
+  lastName:                String,
+  email:                   String,
+  phoneNumber:             String,
+  nationalInsuranceNumber: String
 )
 
-object SDECThread {
-  given OFormat[SDECThread] = Json.format[SDECThread]
+object SDECRecipient {
+  given OFormat[SDECRecipient] = Json.format[SDECRecipient]
 }

@@ -14,20 +14,30 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.*
 
-final case class RecipientDetails(
-  firstName:               String,
-  lastName:                String,
-  email:                   String,
-  phoneNumber:             String,
-  nationalInsuranceNumber: String,
-  hasRelatedCase:          Boolean,
-  caseReferenceNumber:     Option[String]
-)
+enum SDECThreadStatus {
 
-object RecipientDetails {
-  implicit val format: OFormat[RecipientDetails] = Json.format[RecipientDetails]
+  case Draft
+  case Active
+  case Closed
+  case Archived
+}
+
+object SDECThreadStatus {
+
+  given Format[SDECThreadStatus] = Format(
+    Reads {
+      case JsString(value) =>
+        SDECThreadStatus.values
+          .find(_.toString == value)
+          .map(JsSuccess(_))
+          .getOrElse(JsError(s"Unknown SDECThreadStatus: $value"))
+
+      case _ => JsError("SDECThreadStatus must be a string")
+    },
+    Writes(status => JsString(status.toString))
+  )
 }

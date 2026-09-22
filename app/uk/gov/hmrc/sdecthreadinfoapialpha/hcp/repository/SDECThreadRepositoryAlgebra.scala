@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThread
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThread
 
 import scala.concurrent.Future
 

@@ -17,13 +17,13 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 
 import slick.jdbc.H2Profile.api.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.{SDECThread, SDECThreadStatus}
+import slick.lifted.ProvenShape
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECThread, SDECThreadStatus}
 
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 import SDECThreadMappings.given
-import slick.lifted.ProvenShape
 
 class SDECThreadTable(tag: Tag) extends Table[SDECThread](tag, "sdec_thread"):
 

@@ -17,10 +17,9 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 
 import slick.jdbc.H2Profile.api.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECRecipient
 import slick.lifted.ForeignKeyQuery
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThread
 import slick.lifted.ProvenShape
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECThread}
 
 class SDECRecipientTable(tag: Tag) extends Table[SDECRecipient](tag, "sdec_recipient"):
 

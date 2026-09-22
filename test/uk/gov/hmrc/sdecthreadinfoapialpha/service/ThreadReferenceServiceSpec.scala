@@ -21,15 +21,30 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.InvalidThreadReferenceException
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.repository.ThreadReferenceRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECThreadRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThread
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadStatus.Active
 
 import java.time.{LocalDate, LocalDateTime}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class ThreadReferenceServiceSpec extends AnyWordSpec with Matchers {
+  given ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
-  private val threadReference = ThreadReference(
+  private val thread = SDECThread(
+    id = 1L,
+    reference = "THREAD-001",
+    status = Active,
+    createdTimeStamp = LocalDateTime.parse("2026-06-30T11:05:23"),
+    lastUpdatedTimeStamp = LocalDateTime.parse("2026-07-02T08:05:23"),
+    threadExpiryDate = LocalDate.parse("2026-07-30"),
+    caseReference = "CASE-001",
+    email = "some@example.com",
+    nino = "QQQQQQQQC"
+  )
+
+  ThreadReference(
     id = "THREAD-001",
     status = ThreadStatus.Active,
     createdTimeStamp = LocalDateTime.parse("2026-06-30T11:05:23"),
@@ -51,22 +66,19 @@ class ThreadReferenceServiceSpec extends AnyWordSpec with Matchers {
     )
   )
 
-  private val repository = new ThreadReferenceRepositoryAlgebra {
+  private val repository = new SDECThreadRepositoryAlgebra {
 
-    override def insertThreadReference(
-      threadRef: ThreadReference
-    ): Future[Unit] =
-      Future.successful(())
+    override def insert(thread: SDECThread): Future[SDECThread] = Future.successful(thread)
 
-    override def getByThreadReference(
-      id: String
-    ): Future[ThreadReference] =
-      Future.successful(threadReference)
+    override def update(thread: SDECThread): Future[SDECThread] = Future.successful(thread)
 
-    override def createThread(
-      request: CreateThreadRequest
-    ): Future[ThreadReference] =
-      Future.successful(threadReference)
+    override def getById(id: Long): Future[Option[SDECThread]] = Future.successful(
+      Some(thread)
+    )
+
+    override def getByReference(reference: String): Future[Option[SDECThread]] = Future.successful(
+      Some(thread)
+    )
   }
 
   private val service = new ThreadReferenceService(repository)
@@ -75,7 +87,7 @@ class ThreadReferenceServiceSpec extends AnyWordSpec with Matchers {
     "return the thread reference from the repository" in {
       service
         .getThreadInfoByThreadId("ABCD1234EFGH")
-        .futureValue shouldBe threadReference
+        .futureValue shouldBe thread
     }
 
     "fail for an invalid thread reference" in {

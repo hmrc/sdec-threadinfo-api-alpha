@@ -18,8 +18,8 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
 import play.api.Logging
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.InvalidThreadReferenceException
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThread
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECThreadRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThread
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

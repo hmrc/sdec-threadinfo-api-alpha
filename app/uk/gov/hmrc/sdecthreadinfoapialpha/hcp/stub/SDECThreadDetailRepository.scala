@@ -19,8 +19,8 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.stub
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.H2Profile
 import slick.jdbc.H2Profile.api.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThreadDetail
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECThreadDetailRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadDetail
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,11 +46,9 @@ class SDECThreadDetailRepository @Inject() (
       SDECTables.threadDetails
         .filter(_.id === detail.id)
         .update(detail)
-    ).map{rowsUpdated =>
-      if rowsUpdated == 1 then
-        detail
-      else
-        throw new NoSuchElementException(s"SDECThread with id ${detail.id} was not found")
+    ).map { rowsUpdated =>
+      if rowsUpdated == 1 then detail
+      else throw new NoSuchElementException(s"SDECThread with id ${detail.id} was not found")
     }
 
   override def getById(id: Long): Future[Option[SDECThreadDetail]] =

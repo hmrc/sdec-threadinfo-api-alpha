@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
 import play.api.libs.json.{Json, OFormat}
 
-case class SDECRecipient(
-  id:                      Long,
-  sdecThreadId:            Long,
-  firstName:               String,
-  lastName:                String,
-  email:                   String,
-  phoneNumber:             String,
-  nationalInsuranceNumber: String
+import java.time.LocalDate
+
+final case class ThreadDetails(
+  message:      String,
+  responseDate: LocalDate
 )
 
-object SDECRecipient {
-  given OFormat[SDECRecipient] = Json.format[SDECRecipient]
+object ThreadDetails {
+  implicit val format: OFormat[ThreadDetails] = Json.format[ThreadDetails]
 }

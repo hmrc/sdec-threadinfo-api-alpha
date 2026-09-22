@@ -17,7 +17,7 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 
 import slick.jdbc.H2Profile.api.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.model.SDECThreadStatus
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadStatus
 
 object SDECThreadMappings:
 

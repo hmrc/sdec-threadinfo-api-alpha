@@ -14,18 +14,29 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.*
 
-import java.time.LocalDateTime
+enum ThreadStatus {
+  case Draft
+  case Active
+  case Closed
+  case Archived
+}
 
-final case class CreateThreadResponse(
-  threadReference:  String,
-  createdTimeStamp: LocalDateTime
-)
+object ThreadStatus {
 
-object CreateThreadResponse {
-  implicit val format: OFormat[CreateThreadResponse] =
-    Json.format[CreateThreadResponse]
+  given Format[ThreadStatus] = Format(
+    Reads {
+      case JsString(value) =>
+        ThreadStatus.values
+          .find(_.toString == value)
+          .map(JsSuccess(_))
+          .getOrElse(JsError(s"Unknown ThreadStatus: $value"))
+
+      case _ => JsError("ThreadStatus must be a string")
+    },
+    Writes(status => JsString(status.toString))
+  )
 }
