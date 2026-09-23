@@ -24,12 +24,16 @@ case class SDECThread(
   id:                   Long,
   reference:            String,
   status:               SDECThreadStatus,
+  createdBy:            Long,
   createdTimeStamp:     LocalDateTime,
   lastUpdatedTimeStamp: LocalDateTime,
   threadExpiryDate:     LocalDate,
-  caseReference:        String,
+  caseReference:        Option[String],
+  recipientId:          Option[Long],
   email:                String,
-  nino:                 String
+  nino:                 Option[String],
+  message:              String,
+  requiredBy:           Option[LocalDate]
 )
 
 object SDECThread {

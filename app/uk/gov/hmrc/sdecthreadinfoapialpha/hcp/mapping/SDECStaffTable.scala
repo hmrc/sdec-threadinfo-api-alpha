@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository
+package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
+import slick.jdbc.H2Profile.api.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECStaff
 
-import scala.concurrent.Future
+class SDECStaffTable(tag: Tag) extends Table[SDECStaff](tag, "sdec_staff") {
 
-trait SDECRecipientRepositoryAlgebra {
+  def id   = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def pid  = column[String]("pid")
+  def name = column[String]("name")
 
-  def findById(id: Long): Future[Option[SDECRecipient]]
-
-  def findByInternalId(internalId: String): Future[Option[SDECRecipient]]
-
-  def findAll(): Future[Seq[SDECRecipient]]
-
-  def insert(recipient: SDECRecipient): Future[Long]
-
-  def update(recipient: SDECRecipient): Future[Int]
-
-  def delete(id: Long): Future[Int]
+  override def * =
+    (id, pid, name).mapTo[SDECStaff]
 }

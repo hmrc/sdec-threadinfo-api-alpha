@@ -22,69 +22,70 @@ import slick.jdbc.H2Profile
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import slick.jdbc.H2Profile.api.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping.SDECThreadTable
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECThreadRepositoryAlgebra
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThread
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping.StaffRoleTable
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.StaffRoleRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.StaffRole
 
 @Singleton
-class SDECThreadRepository @Inject() (
+class StaffRoleRepository @Inject() (
   dbConfigProvider: DatabaseConfigProvider
 )(using ExecutionContext)
-    extends SDECThreadRepositoryAlgebra {
+    extends StaffRoleRepositoryAlgebra {
   private val db = dbConfigProvider.get[H2Profile].db
 
-  private val sdecThreads = TableQuery[SDECThreadTable]
+  private val staffRoles = TableQuery[StaffRoleTable]
 
-  def findById(id: Long): Future[Option[SDECThread]] =
+  def findById(id: Long): Future[Option[StaffRole]] =
     db.run(
-      sdecThreads
+      staffRoles
         .filter(_.id === id)
         .result
         .headOption
     )
 
-  def findByReference(reference: String): Future[Option[SDECThread]] =
+  def findByStaffId(staffId: Long): Future[Seq[StaffRole]] =
     db.run(
-      sdecThreads
-        .filter(_.reference === reference)
+      staffRoles
+        .filter(_.staffId === staffId)
+        .result
+    )
+
+  def findByTeamId(teamId: Long): Future[Seq[StaffRole]] =
+    db.run(
+      staffRoles
+        .filter(_.teamId === teamId)
+        .result
+    )
+
+  def findByStaffAndTeam(
+    staffId: Long,
+    teamId:  Long
+  ): Future[Option[StaffRole]] =
+    db.run(
+      staffRoles
+        .filter(role =>
+          role.staffId === staffId &&
+            role.teamId === teamId
+        )
         .result
         .headOption
     )
 
-  def findByCreatedBy(staffId: Long): Future[Seq[SDECThread]] =
+  def insert(staffRole: StaffRole): Future[Long] =
     db.run(
-      sdecThreads
-        .filter(_.createdBy === staffId)
-        .result
+      (staffRoles returning staffRoles.map(_.id)) += staffRole
     )
 
-  def findByRecipientId(recipientId: Long): Future[Seq[SDECThread]] =
+  def update(staffRole: StaffRole): Future[Int] =
     db.run(
-      sdecThreads
-        .filter(_.recipientId === recipientId)
-        .result
-    )
-
-  def findAll(): Future[Seq[SDECThread]] =
-    db.run(
-      sdecThreads.result
-    )
-
-  def insert(thread: SDECThread): Future[Long] =
-    db.run(
-      (sdecThreads returning sdecThreads.map(_.id)) += thread
-    )
-
-  def update(thread: SDECThread): Future[Int] =
-    db.run(
-      sdecThreads
-        .filter(_.id === thread.id)
-        .update(thread)
+      staffRoles
+        .filter(_.id === staffRole.id)
+        .update(staffRole)
     )
 
   def delete(id: Long): Future[Int] =
     db.run(
-      sdecThreads
+      staffRoles
         .filter(_.id === id)
         .delete
     )

@@ -16,9 +16,12 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
+import io.scalaland.chimney.Transformer
 import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECThread, SDECThreadStatus}
 
 import java.time.{LocalDate, LocalDateTime}
+import io.scalaland.chimney.dsl.*
 
 case class ThreadReference(
   id:                      String,
@@ -27,10 +30,27 @@ case class ThreadReference(
   lastUpdatedTimeStamp:    LocalDateTime,
   threadExpiryDate:        LocalDate,
   associatedCaseReference: String,
-  recipientDetails:        RecipientDetails,
-  threadDetails:           ThreadDetails
+  recipientDetails:        Option[RecipientDetails]
 )
 
 object ThreadReference {
   implicit val format: Format[ThreadReference] = Json.format[ThreadReference]
+
+  def fromEntity(thread: SDECThread, recipient: Option[SDECRecipient]): ThreadReference =
+    thread
+      .into[ThreadReference]
+      .withFieldRenamed(_.reference, _.id)
+      .withFieldComputed(
+        _.status,
+        _.status.transformInto[ThreadStatus]
+      )
+      .withFieldComputed(
+        _.associatedCaseReference,
+        _.caseReference.getOrElse("")
+      )
+      .withFieldComputed(
+        _.recipientDetails,
+        _ => RecipientDetails.fromEntity(recipient)
+      )
+      .transform
 }

@@ -18,43 +18,60 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.stub
 
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.H2Profile
-import slick.jdbc.H2Profile.api.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECRecipientRepositoryAlgebra
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import slick.jdbc.H2Profile.api.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping.SDECRecipientTable
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECRecipientRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
 
 @Singleton
 class SDECRecipientRepository @Inject() (
   dbConfigProvider: DatabaseConfigProvider
 )(using ExecutionContext)
-    extends SDECRecipientRepositoryAlgebra:
-
+    extends SDECRecipientRepositoryAlgebra {
   private val db = dbConfigProvider.get[H2Profile].db
 
-  override def insert(recipient: SDECRecipient): Future[SDECRecipient] =
-    val insertQuery =
-      SDECTables.recipients returning SDECTables.recipients.map(_.id) into { case (recipient, id) =>
-        recipient.copy(id = id)
-      }
+  private val sdecRecipients = TableQuery[SDECRecipientTable]
 
-    db.run(insertQuery += recipient)
-
-  override def update(recipient: SDECRecipient): Future[SDECRecipient] =
+  def findById(id: Long): Future[Option[SDECRecipient]] =
     db.run(
-      SDECTables.recipients
-        .filter(_.id === recipient.id)
-        .update(recipient)
-    ).map { rowsUpdated =>
-      if rowsUpdated == 1 then recipient
-      else throw new NoSuchElementException(s"SDECThread with id ${recipient.id} was not found")
-    }
-
-  override def getById(id: Long): Future[Option[SDECRecipient]] =
-    db.run(
-      SDECTables.recipients
+      sdecRecipients
         .filter(_.id === id)
         .result
         .headOption
     )
+
+  def findByInternalId(internalId: String): Future[Option[SDECRecipient]] =
+    db.run(
+      sdecRecipients
+        .filter(_.internalId === internalId)
+        .result
+        .headOption
+    )
+
+  def findAll(): Future[Seq[SDECRecipient]] =
+    db.run(
+      sdecRecipients.result
+    )
+
+  def insert(recipient: SDECRecipient): Future[Long] =
+    db.run(
+      (sdecRecipients returning sdecRecipients.map(_.id)) += recipient
+    )
+
+  def update(recipient: SDECRecipient): Future[Int] =
+    db.run(
+      sdecRecipients
+        .filter(_.id === recipient.id)
+        .update(recipient)
+    )
+
+  def delete(id: Long): Future[Int] =
+    db.run(
+      sdecRecipients
+        .filter(_.id === id)
+        .delete
+    )
+}

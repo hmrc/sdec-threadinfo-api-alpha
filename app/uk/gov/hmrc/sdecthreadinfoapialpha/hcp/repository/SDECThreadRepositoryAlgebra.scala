@@ -20,12 +20,21 @@ import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThread
 
 import scala.concurrent.Future
 
-trait SDECThreadRepositoryAlgebra:
+trait SDECThreadRepositoryAlgebra {
 
-  def insert(thread: SDECThread): Future[SDECThread]
+  def findById(id: Long): Future[Option[SDECThread]]
 
-  def update(thread: SDECThread): Future[SDECThread]
+  def findByReference(reference: String): Future[Option[SDECThread]]
 
-  def getById(id: Long): Future[Option[SDECThread]]
+  def findByCreatedBy(staffId: Long): Future[Seq[SDECThread]]
 
-  def getByReference(reference: String): Future[Option[SDECThread]]
+  def findByRecipientId(recipientId: Long): Future[Seq[SDECThread]]
+
+  def findAll(): Future[Seq[SDECThread]]
+
+  def insert(thread: SDECThread): Future[Long]
+
+  def update(thread: SDECThread): Future[Int]
+
+  def delete(id: Long): Future[Int]
+}

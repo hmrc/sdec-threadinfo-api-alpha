@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository
+package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadDTO
 
 import scala.concurrent.Future
 
-trait SDECRecipientRepositoryAlgebra {
-
-  def findById(id: Long): Future[Option[SDECRecipient]]
-
-  def findByInternalId(internalId: String): Future[Option[SDECRecipient]]
-
-  def findAll(): Future[Seq[SDECRecipient]]
-
-  def insert(recipient: SDECRecipient): Future[Long]
-
-  def update(recipient: SDECRecipient): Future[Int]
-
-  def delete(id: Long): Future[Int]
+trait ThreadServiceAlgebra {
+  def getByPID(pid: String): Future[Seq[ThreadDTO]]
 }

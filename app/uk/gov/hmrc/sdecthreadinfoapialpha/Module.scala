@@ -18,11 +18,9 @@ package uk.gov.hmrc.sdecthreadinfoapialpha
 
 import play.api.inject.{Binding, Module as AppModule}
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.{SDECRecipientRepositoryAlgebra, SDECThreadDetailRepositoryAlgebra, SDECThreadRepositoryAlgebra}
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.stub.{SDECRecipientRepository, SDECThreadDetailRepository, SDECThreadRepository}
-import uk.gov.hmrc.sdecthreadinfoapialpha.repository.ThreadReferenceRepositoryAlgebra
-import uk.gov.hmrc.sdecthreadinfoapialpha.service.{ThreadReferenceService, ThreadReferenceServiceAlgebra, ThreadSummaryService, ThreadSummaryServiceAlgebra}
-import uk.gov.hmrc.sdecthreadinfoapialpha.stubs.ThreadReferenceRepository
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.stub.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.service.*
 
 import java.time.Clock
 
@@ -34,13 +32,11 @@ class Module extends AppModule:
   ): Seq[Binding[?]] =
     Seq(
       bind[Clock].toInstance(Clock.systemDefaultZone()),
-      bind[ThreadReferenceRepositoryAlgebra]
-        .to[ThreadReferenceRepository],
-      bind[SDECThreadRepositoryAlgebra].to[SDECThreadRepository],
-      bind[SDECThreadDetailRepositoryAlgebra].to[SDECThreadDetailRepository],
+      bind[SDECStaffRepositoryAlgebra].to[SDECStaffRepository],
+      bind[SDECTeamRepositoryAlgebra].to[SDECTeamRepository],
+      bind[StaffRoleRepositoryAlgebra].to[StaffRoleRepository],
       bind[SDECRecipientRepositoryAlgebra].to[SDECRecipientRepository],
-      bind[ThreadReferenceServiceAlgebra]
-        .to[ThreadReferenceService],
-      bind[ThreadSummaryServiceAlgebra]
-        .to[ThreadSummaryService]
+      bind[SDECThreadRepositoryAlgebra].to[SDECThreadRepository],
+      bind[ThreadReferenceServiceAlgebra].to[ThreadReferenceService],
+      bind[ThreadSummaryServiceAlgebra].to[ThreadSummaryService]
     )

@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadDetail
+import play.api.libs.json.{Json, OFormat}
 
-import scala.concurrent.Future
+case class StaffRole(
+  id:      Long,
+  staffId: Long,
+  teamId:  Long,
+  srsRole: SRSRole
+)
 
-trait SDECThreadDetailRepositoryAlgebra:
-
-  def insert(detail: SDECThreadDetail): Future[SDECThreadDetail]
-
-  def update(detail: SDECThreadDetail): Future[SDECThreadDetail]
-
-  def getById(id: Long): Future[Option[SDECThreadDetail]]
+object StaffRole {
+  given OFormat[StaffRole] = Json.format[StaffRole]
+}

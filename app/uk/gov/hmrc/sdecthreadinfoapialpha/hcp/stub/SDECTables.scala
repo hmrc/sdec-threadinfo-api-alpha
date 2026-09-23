@@ -17,15 +17,16 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.stub
 
 import slick.jdbc.H2Profile.api.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping.{SDECRecipientTable, SDECThreadDetailTable, SDECThreadTable}
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping.{SDECRecipientTable, SDECStaffTable, SDECTeamTable, SDECThreadTable, StaffRoleTable}
 
 object SDECTables:
 
-  val threads: TableQuery[SDECThreadTable] =
-    TableQuery[SDECThreadTable]
+  val sdecStaff = TableQuery[SDECStaffTable]
 
-  val threadDetails: TableQuery[SDECThreadDetailTable] =
-    TableQuery[SDECThreadDetailTable]
+  val sdecTeams = TableQuery[SDECTeamTable]
 
-  val recipients: TableQuery[SDECRecipientTable] =
-    TableQuery[SDECRecipientTable]
+  val staffRoles = TableQuery[StaffRoleTable]
+
+  val sdecRecipients = TableQuery[SDECRecipientTable]
+
+  val sdecThreads = TableQuery[SDECThreadTable]

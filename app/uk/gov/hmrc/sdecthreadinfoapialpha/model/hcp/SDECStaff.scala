@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
+import play.api.libs.json.{Json, OFormat}
 
-import scala.concurrent.Future
+case class SDECStaff(id: Long, pid: String, name: String)
 
-trait SDECRecipientRepositoryAlgebra {
-
-  def findById(id: Long): Future[Option[SDECRecipient]]
-
-  def findByInternalId(internalId: String): Future[Option[SDECRecipient]]
-
-  def findAll(): Future[Seq[SDECRecipient]]
-
-  def insert(recipient: SDECRecipient): Future[Long]
-
-  def update(recipient: SDECRecipient): Future[Int]
-
-  def delete(id: Long): Future[Int]
+object SDECStaff {
+  given OFormat[SDECStaff] = Json.format[SDECStaff]
 }

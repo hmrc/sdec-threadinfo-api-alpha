@@ -17,47 +17,26 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 
 import slick.jdbc.H2Profile.api.*
-import slick.lifted.ForeignKeyQuery
-import slick.lifted.ProvenShape
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECThread}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
 
-class SDECRecipientTable(tag: Tag) extends Table[SDECRecipient](tag, "sdec_recipient"):
+class SDECRecipientTable(tag: Tag) extends Table[SDECRecipient](tag, "sdec_recipient") {
 
-  def id: Rep[Long] =
-    column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def internalId  = column[String]("internal_id")
+  def firstName   = column[String]("first_name")
+  def lastName    = column[String]("last_name")
+  def email       = column[String]("email")
+  def phoneNumber = column[Option[String]]("phone_number")
+  def nino        = column[String]("nino")
 
-  def sdecThreadId: Rep[Long] =
-    column[Long]("sdec_thread_id")
-
-  def firstName: Rep[String] =
-    column[String]("first_name")
-
-  def lastName: Rep[String] =
-    column[String]("last_name")
-
-  def email: Rep[String] =
-    column[String]("email")
-
-  def phoneNumber: Rep[String] =
-    column[String]("phone_number")
-
-  def nationalInsuranceNumber: Rep[String] =
-    column[String]("national_insurance_number")
-
-  def thread: ForeignKeyQuery[SDECThreadTable, SDECThread] =
-    foreignKey(
-      "fk_sdec_recipient_thread",
-      sdecThreadId,
-      TableQuery[SDECThreadTable]
-    )(_.id)
-
-  override def * : ProvenShape[SDECRecipient] =
+  override def * =
     (
       id,
-      sdecThreadId,
+      internalId,
       firstName,
       lastName,
       email,
       phoneNumber,
-      nationalInsuranceNumber
+      nino
     ).mapTo[SDECRecipient]
+}

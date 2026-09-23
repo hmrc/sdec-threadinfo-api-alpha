@@ -17,52 +17,46 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 
 import slick.jdbc.H2Profile.api.*
-import slick.lifted.ProvenShape
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECThread, SDECThreadStatus}
 
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 
-import SDECThreadMappings.given
+given BaseColumnType[SDECThreadStatus] =
+  MappedColumnType.base[SDECThreadStatus, String](
+    _.toString,
+    SDECThreadStatus.valueOf
+  )
 
-class SDECThreadTable(tag: Tag) extends Table[SDECThread](tag, "sdec_thread"):
+class SDECThreadTable(tag: Tag) extends Table[SDECThread](tag, "sdec_thread") {
 
-  def id: Rep[Long] =
-    column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def id                   = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def reference            = column[String]("reference")
+  def status               = column[SDECThreadStatus]("status")
+  def createdBy            = column[Long]("created_by")
+  def createdTimeStamp     = column[LocalDateTime]("created_timestamp")
+  def lastUpdatedTimeStamp = column[LocalDateTime]("last_updated_timestamp")
+  def threadExpiryDate     = column[LocalDate]("thread_expiry_date")
+  def caseReference        = column[Option[String]]("case_reference")
+  def recipientId          = column[Option[Long]]("recipient_id")
+  def email                = column[String]("email")
+  def nino                 = column[Option[String]]("nino")
+  def message              = column[String]("message")
+  def requiredBy           = column[Option[LocalDate]]("required_by")
 
-  def reference: Rep[String] =
-    column[String]("reference")
-
-  def status: Rep[SDECThreadStatus] =
-    column[SDECThreadStatus]("status")
-
-  def createdTimeStamp: Rep[LocalDateTime] =
-    column[LocalDateTime]("created_timestamp")
-
-  def lastUpdatedTimeStamp: Rep[LocalDateTime] =
-    column[LocalDateTime]("last_updated_timestamp")
-
-  def threadExpiryDate: Rep[LocalDate] =
-    column[LocalDate]("thread_expiry_date")
-
-  def caseReference: Rep[String] =
-    column[String]("case_reference")
-
-  def email: Rep[String] =
-    column[String]("email")
-
-  def nino: Rep[String] =
-    column[String]("nino")
-
-  override def * : ProvenShape[SDECThread] =
+  override def * =
     (
       id,
       reference,
       status,
+      createdBy,
       createdTimeStamp,
       lastUpdatedTimeStamp,
       threadExpiryDate,
       caseReference,
+      recipientId,
       email,
-      nino
+      nino,
+      message,
+      requiredBy
     ).mapTo[SDECThread]
+}

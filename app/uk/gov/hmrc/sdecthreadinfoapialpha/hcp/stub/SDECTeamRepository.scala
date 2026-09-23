@@ -22,69 +22,55 @@ import slick.jdbc.H2Profile
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import slick.jdbc.H2Profile.api.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping.SDECThreadTable
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECThreadRepositoryAlgebra
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThread
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping.SDECTeamTable
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECTeamRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECTeam
 
 @Singleton
-class SDECThreadRepository @Inject() (
+class SDECTeamRepository @Inject() (
   dbConfigProvider: DatabaseConfigProvider
 )(using ExecutionContext)
-    extends SDECThreadRepositoryAlgebra {
+    extends SDECTeamRepositoryAlgebra {
   private val db = dbConfigProvider.get[H2Profile].db
 
-  private val sdecThreads = TableQuery[SDECThreadTable]
+  private val sdecTeams = TableQuery[SDECTeamTable]
 
-  def findById(id: Long): Future[Option[SDECThread]] =
+  def findById(id: Long): Future[Option[SDECTeam]] =
     db.run(
-      sdecThreads
+      sdecTeams
         .filter(_.id === id)
         .result
         .headOption
     )
 
-  def findByReference(reference: String): Future[Option[SDECThread]] =
+  def findBySrsName(srsName: String): Future[Option[SDECTeam]] =
     db.run(
-      sdecThreads
-        .filter(_.reference === reference)
+      sdecTeams
+        .filter(_.srsName === srsName)
         .result
         .headOption
     )
 
-  def findByCreatedBy(staffId: Long): Future[Seq[SDECThread]] =
+  def findAll(): Future[Seq[SDECTeam]] =
     db.run(
-      sdecThreads
-        .filter(_.createdBy === staffId)
-        .result
+      sdecTeams.result
     )
 
-  def findByRecipientId(recipientId: Long): Future[Seq[SDECThread]] =
+  def insert(team: SDECTeam): Future[Long] =
     db.run(
-      sdecThreads
-        .filter(_.recipientId === recipientId)
-        .result
+      (sdecTeams returning sdecTeams.map(_.id)) += team
     )
 
-  def findAll(): Future[Seq[SDECThread]] =
+  def update(team: SDECTeam): Future[Int] =
     db.run(
-      sdecThreads.result
-    )
-
-  def insert(thread: SDECThread): Future[Long] =
-    db.run(
-      (sdecThreads returning sdecThreads.map(_.id)) += thread
-    )
-
-  def update(thread: SDECThread): Future[Int] =
-    db.run(
-      sdecThreads
-        .filter(_.id === thread.id)
-        .update(thread)
+      sdecTeams
+        .filter(_.id === team.id)
+        .update(team)
     )
 
   def delete(id: Long): Future[Int] =
     db.run(
-      sdecThreads
+      sdecTeams
         .filter(_.id === id)
         .delete
     )

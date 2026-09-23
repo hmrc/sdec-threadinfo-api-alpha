@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
+package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
+import slick.jdbc.H2Profile.api.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECTeam
 
-import play.api.libs.json.{Json, OFormat}
+class SDECTeamTable(tag: Tag) extends Table[SDECTeam](tag, "sdec_team") {
 
-import java.time.LocalDate
+  def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def srsName     = column[String]("srs_name")
+  def isTaskBased = column[Boolean]("is_task_based")
 
-case class SDECThreadDetail(
-  id:           Long,
-  sdecThreadId: Long,
-  message:      String,
-  requiredBy:   LocalDate
-)
-
-object SDECThreadDetail {
-  given OFormat[SDECThreadDetail] = Json.format[SDECThreadDetail]
+  override def * =
+    (id, srsName, isTaskBased).mapTo[SDECTeam]
 }

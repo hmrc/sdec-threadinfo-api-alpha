@@ -19,13 +19,13 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 import play.api.libs.json.{Json, OFormat}
 
 case class SDECRecipient(
-  id:                      Long,
-  sdecThreadId:            Long,
-  firstName:               String,
-  lastName:                String,
-  email:                   String,
-  phoneNumber:             String,
-  nationalInsuranceNumber: String
+  id:          Long,
+  internalId:  String,
+  firstName:   String,
+  lastName:    String,
+  email:       String,
+  phoneNumber: Option[String],
+  nino:        String
 )
 
 object SDECRecipient {

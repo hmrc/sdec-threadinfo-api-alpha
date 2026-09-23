@@ -16,21 +16,26 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.StaffRole
 
 import scala.concurrent.Future
 
-trait SDECRecipientRepositoryAlgebra {
+trait StaffRoleRepositoryAlgebra {
 
-  def findById(id: Long): Future[Option[SDECRecipient]]
+  def findById(id: Long): Future[Option[StaffRole]]
 
-  def findByInternalId(internalId: String): Future[Option[SDECRecipient]]
+  def findByStaffId(staffId: Long): Future[Seq[StaffRole]]
 
-  def findAll(): Future[Seq[SDECRecipient]]
+  def findByTeamId(teamId: Long): Future[Seq[StaffRole]]
 
-  def insert(recipient: SDECRecipient): Future[Long]
+  def findByStaffAndTeam(
+                          staffId: Long,
+                          teamId: Long
+                        ): Future[Option[StaffRole]]
 
-  def update(recipient: SDECRecipient): Future[Int]
+  def insert(staffRole: StaffRole): Future[Long]
+
+  def update(staffRole: StaffRole): Future[Int]
 
   def delete(id: Long): Future[Int]
 }

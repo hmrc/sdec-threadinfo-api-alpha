@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
+import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Reads, Writes}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadStatus
 
-import scala.concurrent.Future
+enum SRSRole {
+  case Supervisor
+  case CaseWorker
+}
 
-trait SDECRecipientRepositoryAlgebra {
+object SRSRole {
+  given Format[SRSRole] = Format(
+    Reads {
+      case JsString(value) =>
+        SRSRole.values
+          .find(_.toString == value)
+          .map(JsSuccess(_))
+          .getOrElse(JsError(s"Unknown SRS Role: $value"))
 
-  def findById(id: Long): Future[Option[SDECRecipient]]
-
-  def findByInternalId(internalId: String): Future[Option[SDECRecipient]]
-
-  def findAll(): Future[Seq[SDECRecipient]]
-
-  def insert(recipient: SDECRecipient): Future[Long]
-
-  def update(recipient: SDECRecipient): Future[Int]
-
-  def delete(id: Long): Future[Int]
+      case _ => JsError("SRS Role must be a string")
+    },
+    Writes(role => JsString(role.toString))
+  )
 }
