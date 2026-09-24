@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model.requests
+package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
-import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadDTO
 
-case class IdentifierRequest[A](request: Request[A], userId: String) extends WrappedRequest[A](request)
+import scala.concurrent.Future
+
+class ThreadService() extends ThreadServiceAlgebra {
+
+  override def getByPID(pid: String): Future[Seq[ThreadDTO]] = ???
+}

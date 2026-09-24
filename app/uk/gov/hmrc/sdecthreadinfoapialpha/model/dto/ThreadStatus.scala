@@ -17,6 +17,8 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
 import play.api.libs.json.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadStatus
 
 enum ThreadStatus {
   case Draft
@@ -39,4 +41,12 @@ object ThreadStatus {
     },
     Writes(status => JsString(status.toString))
   )
+
+  def fromEntity(entity: SDECThreadStatus): ThreadStatus =
+    entity match {
+      case hcp.SDECThreadStatus.Draft    => Draft
+      case hcp.SDECThreadStatus.Active   => Active
+      case hcp.SDECThreadStatus.Closed   => Closed
+      case hcp.SDECThreadStatus.Archived => Archived
+    }
 }

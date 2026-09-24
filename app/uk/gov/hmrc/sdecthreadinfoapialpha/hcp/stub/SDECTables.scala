@@ -21,12 +21,12 @@ import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping.{SDECRecipientTable, SDECS
 
 object SDECTables:
 
-  val sdecStaff = TableQuery[SDECStaffTable]
+  val sdecStaff: TableQuery[SDECStaffTable] = TableQuery[SDECStaffTable]
 
-  val sdecTeams = TableQuery[SDECTeamTable]
+  val sdecTeams: TableQuery[SDECTeamTable] = TableQuery[SDECTeamTable]
 
-  val staffRoles = TableQuery[StaffRoleTable]
+  val staffRoles: TableQuery[StaffRoleTable] = TableQuery[StaffRoleTable]
 
-  val sdecRecipients = TableQuery[SDECRecipientTable]
+  val sdecRecipients: TableQuery[SDECRecipientTable] = TableQuery[SDECRecipientTable]
 
-  val sdecThreads = TableQuery[SDECThreadTable]
+  val sdecThreads: TableQuery[SDECThreadTable] = TableQuery[SDECThreadTable]

@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.requests
 
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.requests.ExternalUser
+import scala.util.Random
 
-case class SDECRecipient(
-  id:          Long,
+case class ExternalUser(
   internalId:  Option[String],
   firstName:   String,
   lastName:    String,
@@ -29,17 +27,18 @@ case class SDECRecipient(
   nino:        String
 )
 
-object SDECRecipient {
-  given OFormat[SDECRecipient] = Json.format[SDECRecipient]
+object ExternalUser {
 
-  def convert(externalUser: ExternalUser): SDECRecipient =
-    SDECRecipient(
-      id = 0L,
-      internalId = externalUser.internalId,
-      firstName = externalUser.firstName,
-      lastName = externalUser.lastName,
-      email = externalUser.email,
-      phoneNumber = externalUser.phoneNumber,
-      nino = externalUser.nino
-    )
+  def getRecipientById(threadId: String): ExternalUser =
+    if threadId == "THREAD1000AA" then ExternalUser(Some("12345"), "John", "Smith", "user@test.com", None, "WM111111D")
+    else
+      ExternalUser(
+        Some(Random.alphanumeric.mkString),
+        Random.alphanumeric.dropWhile(_.isDigit).mkString,
+        Random.alphanumeric.dropWhile(_.isDigit).mkString,
+        Random.alphanumeric.dropWhile(_.isDigit).mkString,
+        None,
+        Random.alphanumeric.dropWhile(_.isDigit).mkString
+      )
+
 }

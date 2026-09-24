@@ -17,6 +17,11 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 
 import slick.jdbc.H2Profile.api.*
+import slick.lifted.ForeignKeyQuery
+import slick.lifted.Index
+import slick.lifted.ProvenShape
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECStaff
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECTeam
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SRSRole, StaffRole}
 
 given BaseColumnType[SRSRole] =
@@ -27,32 +32,32 @@ given BaseColumnType[SRSRole] =
 
 class StaffRoleTable(tag: Tag) extends Table[StaffRole](tag, "staff_role") {
 
-  def id      = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def staffId = column[Long]("staff_id")
-  def teamId  = column[Long]("team_id")
-  def srsRole = column[SRSRole]("srs_role")
+  def id:      Rep[Long]    = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def staffId: Rep[Long]    = column[Long]("staff_id")
+  def teamId:  Rep[Long]    = column[Long]("team_id")
+  def srsRole: Rep[SRSRole] = column[SRSRole]("srs_role")
 
-  def staffFk =
+  def staffFk: ForeignKeyQuery[SDECStaffTable, SDECStaff] =
     foreignKey(
       "fk_staff_role",
       staffId,
       TableQuery[SDECStaffTable]
     )(_.id)
 
-  def teamFk =
+  def teamFk: ForeignKeyQuery[SDECTeamTable, SDECTeam] =
     foreignKey(
       "fk_team_role",
       teamId,
       TableQuery[SDECTeamTable]
     )(_.id)
 
-  def staffTeamUnique =
+  def staffTeamUnique: Index =
     index(
       "uq_staff_team",
       (staffId, teamId),
       unique = true
     )
 
-  override def * =
+  override def * : ProvenShape[StaffRole] =
     (id, staffId, teamId, srsRole).mapTo[StaffRole]
 }

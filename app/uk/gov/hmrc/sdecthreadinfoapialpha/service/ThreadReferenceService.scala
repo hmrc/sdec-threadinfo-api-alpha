@@ -20,6 +20,8 @@ import play.api.Logging
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.InvalidThreadReferenceException
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.{SDECRecipientRepositoryAlgebra, SDECThreadRepositoryAlgebra}
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, ThreadReference}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECThread}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.requests.ExternalUser
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,18 +36,51 @@ class ThreadReferenceService @Inject() (
 
   private val threadReferencePattern = "^[A-Z0-9]{12}$".r
 
-  override def getThreadInfoByThreadId(threadId: String): Future[ThreadReference] = {
+  override def getThreadInfoByThreadId(threadId: String, externalUser: ExternalUser): Future[ThreadReference] = {
     logger.info(s"Checking if $threadId exists in the database")
     if threadReferencePattern.matches(threadId) then {
-      threadRepository.findByReference(threadId).map {
-        case Some(thread) =>
-          ThreadReference.fromEntity(thread, None)
-        case None => throw InvalidThreadReferenceException(threadId)
-      }
+      for {
+        threadOption <- threadRepository.findByReference(threadId)
+        recipientId = getRecipientIdFromThread(threadOption)
+        recipientOption <- getOrStoreRecipient(recipientId, externalUser)
+      } yield convertEntityToDTO(threadOption, recipientOption)
     } else {
       Future.failed(InvalidThreadReferenceException(threadId))
     }
   }
 
   override def createThread(request: CreateThreadRequest): Future[CreateThreadRequest] = ???
+
+  private def getRecipientIdFromThread(maybeThread: Option[SDECThread]): Option[Long] =
+    maybeThread match {
+      case Some(value) => value.recipientId
+      case None        => None
+    }
+
+  private def getOrStoreRecipient(
+    recipientId:  Option[Long],
+    externalUser: ExternalUser
+  ): Future[Option[SDECRecipient]] =
+    recipientId match {
+      case Some(id) => recipientRepository.findById(id)
+      case None     =>
+        val recipient = SDECRecipient.convert(externalUser)
+        for {
+          id    <- recipientRepository.insert(recipient)
+          saved <- recipientRepository.findById(id)
+        } yield saved
+    }
+
+  private def convertEntityToDTO(
+    maybeThread:  Option[SDECThread],
+    maybeDetails: Option[SDECRecipient]
+  ): ThreadReference =
+    (maybeThread, maybeDetails) match
+      case (Some(t), Some(r)) =>
+        ThreadReference.convertFromEntities(t, r)
+      case (Some(t), None) =>
+        ThreadReference.convertFromThreadEntity(t)
+      case (_, _) =>
+        ThreadReference.getEmptyThread()
+
 }

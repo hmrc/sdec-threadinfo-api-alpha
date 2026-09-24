@@ -17,14 +17,15 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 
 import slick.jdbc.H2Profile.api.*
+import slick.lifted.ProvenShape
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECStaff
 
 class SDECStaffTable(tag: Tag) extends Table[SDECStaff](tag, "sdec_staff") {
 
-  def id   = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def pid  = column[String]("pid")
-  def name = column[String]("name")
+  def id:   Rep[Long]   = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def pid:  Rep[String] = column[String]("pid")
+  def name: Rep[String] = column[String]("name")
 
-  override def * =
+  override def * : ProvenShape[SDECStaff] =
     (id, pid, name).mapTo[SDECStaff]
 }

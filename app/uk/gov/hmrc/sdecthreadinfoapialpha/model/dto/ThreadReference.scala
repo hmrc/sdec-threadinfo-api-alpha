@@ -16,12 +16,11 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
-import io.scalaland.chimney.Transformer
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECThread, SDECThreadStatus}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadStatus.Draft
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECThread}
 
 import java.time.{LocalDate, LocalDateTime}
-import io.scalaland.chimney.dsl.*
 
 case class ThreadReference(
   id:                      String,
@@ -30,27 +29,73 @@ case class ThreadReference(
   lastUpdatedTimeStamp:    LocalDateTime,
   threadExpiryDate:        LocalDate,
   associatedCaseReference: String,
-  recipientDetails:        Option[RecipientDetails]
+  recipientDetails:        RecipientDetails,
+  threadDetails:           ThreadDetails
 )
 
 object ThreadReference {
+
   implicit val format: Format[ThreadReference] = Json.format[ThreadReference]
 
-  def fromEntity(thread: SDECThread, recipient: Option[SDECRecipient]): ThreadReference =
-    thread
-      .into[ThreadReference]
-      .withFieldRenamed(_.reference, _.id)
-      .withFieldComputed(
-        _.status,
-        _.status.transformInto[ThreadStatus]
+  def convertFromEntities(thread: SDECThread, recipient: SDECRecipient): ThreadReference =
+    ThreadReference(
+      id = thread.reference,
+      status = ThreadStatus.fromEntity(thread.status),
+      createdTimeStamp = thread.createdTimeStamp,
+      lastUpdatedTimeStamp = thread.lastUpdatedTimeStamp,
+      threadExpiryDate = thread.threadExpiryDate,
+      associatedCaseReference = thread.caseReference.getOrElse("No case reference"),
+      recipientDetails = RecipientDetails(
+        firstName = recipient.firstName,
+        lastName = recipient.lastName,
+        email = recipient.email,
+        phoneNumber = recipient.phoneNumber.getOrElse("No phone number"),
+        nationalInsuranceNumber = recipient.nino,
+        hasRelatedCase = thread.caseReference.isDefined,
+        caseReferenceNumber = thread.caseReference
+      ),
+      threadDetails = ThreadDetails(
+        message = thread.message,
+        responseDate = thread.requiredBy.getOrElse(LocalDate.now().plusYears(1L))
       )
-      .withFieldComputed(
-        _.associatedCaseReference,
-        _.caseReference.getOrElse("")
+    )
+
+  def convertFromThreadEntity(thread: SDECThread): ThreadReference =
+    ThreadReference(
+      id = thread.reference,
+      status = ThreadStatus.fromEntity(thread.status),
+      createdTimeStamp = thread.createdTimeStamp,
+      lastUpdatedTimeStamp = thread.lastUpdatedTimeStamp,
+      threadExpiryDate = thread.threadExpiryDate,
+      associatedCaseReference = thread.caseReference.getOrElse("No case reference"),
+      recipientDetails = getEmptyRecipient(),
+      threadDetails = ThreadDetails(
+        message = thread.message,
+        responseDate = thread.requiredBy.getOrElse(LocalDate.now().plusYears(1L))
       )
-      .withFieldComputed(
-        _.recipientDetails,
-        _ => RecipientDetails.fromEntity(recipient)
-      )
-      .transform
+    )
+
+  def getEmptyThread(): ThreadReference =
+    ThreadReference(
+      id = "",
+      status = Draft,
+      createdTimeStamp = LocalDateTime.now(),
+      lastUpdatedTimeStamp = LocalDateTime.now(),
+      threadExpiryDate = LocalDate.now(),
+      associatedCaseReference = "",
+      recipientDetails = getEmptyRecipient(),
+      threadDetails = ThreadDetails(message = "", responseDate = LocalDate.now())
+    )
+
+  private def getEmptyRecipient(): RecipientDetails =
+    RecipientDetails(
+      firstName = "",
+      lastName = "",
+      email = "",
+      phoneNumber = "",
+      nationalInsuranceNumber = "",
+      hasRelatedCase = false,
+      caseReferenceNumber = None
+    )
+
 }

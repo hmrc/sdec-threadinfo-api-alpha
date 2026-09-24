@@ -16,21 +16,23 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.stub
 
+import play.api.Logging
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.H2Profile
-
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
 import slick.jdbc.H2Profile.api.*
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping.SDECThreadTable
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECThreadRepositoryAlgebra
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThread
 
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
+
 @Singleton
 class SDECThreadRepository @Inject() (
   dbConfigProvider: DatabaseConfigProvider
 )(using ExecutionContext)
-    extends SDECThreadRepositoryAlgebra {
+    extends SDECThreadRepositoryAlgebra
+    with Logging {
   private val db = dbConfigProvider.get[H2Profile].db
 
   private val sdecThreads = TableQuery[SDECThreadTable]
@@ -43,13 +45,15 @@ class SDECThreadRepository @Inject() (
         .headOption
     )
 
-  def findByReference(reference: String): Future[Option[SDECThread]] =
+  def findByReference(reference: String): Future[Option[SDECThread]] = {
+    logger.info(s"Finding $reference")
     db.run(
       sdecThreads
         .filter(_.reference === reference)
         .result
         .headOption
     )
+  }
 
   def findByCreatedBy(staffId: Long): Future[Seq[SDECThread]] =
     db.run(

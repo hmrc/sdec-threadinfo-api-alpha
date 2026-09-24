@@ -17,8 +17,6 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
-import io.scalaland.chimney.dsl.*
 
 final case class RecipientDetails(
   firstName:               String,
@@ -32,17 +30,4 @@ final case class RecipientDetails(
 
 object RecipientDetails {
   implicit val format: OFormat[RecipientDetails] = Json.format[RecipientDetails]
-
-  def fromEntity(recipient: Option[SDECRecipient]): Option[RecipientDetails] =
-    recipient.map(fromEntity)
-
-  def fromEntity(recipient: SDECRecipient): RecipientDetails =
-    recipient
-      .into[RecipientDetails]
-      .withFieldConst(_.phoneNumber, recipient.phoneNumber.getOrElse("No Phone Number"))
-      .withFieldRenamed(_.nino, _.nationalInsuranceNumber)
-      .withFieldConst(_.hasRelatedCase, false)
-      .withFieldConst(_.caseReferenceNumber, None)
-      .transform
-
 }

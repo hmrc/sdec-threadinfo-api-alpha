@@ -17,19 +17,20 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 
 import slick.jdbc.H2Profile.api.*
+import slick.lifted.ProvenShape
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
 
 class SDECRecipientTable(tag: Tag) extends Table[SDECRecipient](tag, "sdec_recipient") {
 
-  def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def internalId  = column[String]("internal_id")
-  def firstName   = column[String]("first_name")
-  def lastName    = column[String]("last_name")
-  def email       = column[String]("email")
-  def phoneNumber = column[Option[String]]("phone_number")
-  def nino        = column[String]("nino")
+  def id:          Rep[Long]           = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def internalId:  Rep[Option[String]] = column[Option[String]]("internal_id")
+  def firstName:   Rep[String]         = column[String]("first_name")
+  def lastName:    Rep[String]         = column[String]("last_name")
+  def email:       Rep[String]         = column[String]("email")
+  def phoneNumber: Rep[Option[String]] = column[Option[String]]("phone_number")
+  def nino:        Rep[String]         = column[String]("nino")
 
-  override def * =
+  override def * : ProvenShape[SDECRecipient] =
     (
       id,
       internalId,

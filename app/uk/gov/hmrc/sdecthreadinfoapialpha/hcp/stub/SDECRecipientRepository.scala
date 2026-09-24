@@ -18,13 +18,13 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.stub
 
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.H2Profile
-
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
 import slick.jdbc.H2Profile.api.*
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping.SDECRecipientTable
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECRecipientRepositoryAlgebra
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
+
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SDECRecipientRepository @Inject() (

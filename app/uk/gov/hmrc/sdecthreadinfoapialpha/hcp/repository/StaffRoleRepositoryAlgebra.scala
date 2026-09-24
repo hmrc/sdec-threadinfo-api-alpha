@@ -29,9 +29,9 @@ trait StaffRoleRepositoryAlgebra {
   def findByTeamId(teamId: Long): Future[Seq[StaffRole]]
 
   def findByStaffAndTeam(
-                          staffId: Long,
-                          teamId: Long
-                        ): Future[Option[StaffRole]]
+    staffId: Long,
+    teamId:  Long
+  ): Future[Option[StaffRole]]
 
   def insert(staffRole: StaffRole): Future[Long]
 

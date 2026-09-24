@@ -16,8 +16,7 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 
-import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Reads, Writes}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadStatus
+import play.api.libs.json.*
 
 enum SRSRole {
   case Supervisor

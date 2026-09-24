@@ -16,14 +16,15 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 import slick.jdbc.H2Profile.api.*
+import slick.lifted.ProvenShape
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECTeam
 
 class SDECTeamTable(tag: Tag) extends Table[SDECTeam](tag, "sdec_team") {
 
-  def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def srsName     = column[String]("srs_name")
-  def isTaskBased = column[Boolean]("is_task_based")
+  def id:          Rep[Long]    = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def srsName:     Rep[String]  = column[String]("srs_name")
+  def isTaskBased: Rep[Boolean] = column[Boolean]("is_task_based")
 
-  override def * =
+  override def * : ProvenShape[SDECTeam] =
     (id, srsName, isTaskBased).mapTo[SDECTeam]
 }

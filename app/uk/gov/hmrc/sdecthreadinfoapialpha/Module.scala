@@ -20,7 +20,9 @@ import play.api.inject.{Binding, Module as AppModule}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.*
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.stub.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.repository.ThreadReferenceRepositoryAlgebra
 import uk.gov.hmrc.sdecthreadinfoapialpha.service.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.stubs.ThreadReferenceRepository
 
 import java.time.Clock
 
@@ -37,6 +39,8 @@ class Module extends AppModule:
       bind[StaffRoleRepositoryAlgebra].to[StaffRoleRepository],
       bind[SDECRecipientRepositoryAlgebra].to[SDECRecipientRepository],
       bind[SDECThreadRepositoryAlgebra].to[SDECThreadRepository],
+      bind[ThreadServiceAlgebra].to[ThreadService],
       bind[ThreadReferenceServiceAlgebra].to[ThreadReferenceService],
-      bind[ThreadSummaryServiceAlgebra].to[ThreadSummaryService]
+      bind[ThreadSummaryServiceAlgebra].to[ThreadSummaryService],
+      bind[ThreadReferenceRepositoryAlgebra].to[ThreadReferenceRepository]
     )
