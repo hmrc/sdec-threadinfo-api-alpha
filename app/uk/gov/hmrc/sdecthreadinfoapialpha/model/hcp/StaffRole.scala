@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 
 import play.api.libs.json.{Json, OFormat}
 
-final case class CreateThreadRequest(
-  recipientDetails: RecipientDetails,
-  threadDetails:    ThreadDetails
+case class StaffRole(
+  id:      Long,
+  staffId: Long,
+  teamId:  Long,
+  srsRole: SRSRole
 )
 
-object CreateThreadRequest {
-  implicit val format: OFormat[CreateThreadRequest] =
-    Json.format[CreateThreadRequest]
+object StaffRole {
+  given OFormat[StaffRole] = Json.format[StaffRole]
 }

@@ -22,7 +22,7 @@ import play.api.libs.json.*
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.{InvalidThreadReferenceException, ThreadReferenceNotFoundException}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.ThreadReference
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.requests.ExternalUser
 import uk.gov.hmrc.sdecthreadinfoapialpha.service.ThreadReferenceServiceAlgebra
 
 import javax.inject.Singleton
@@ -40,7 +40,7 @@ class ThreadReferenceController @Inject() (
     logger.info(s"getThreadReference: Getting ThreadInformation for $threadId")
     Action.async { implicit request =>
       threadReferenceService
-        .getThreadInfoByThreadId(threadId)
+        .getThreadInfoByThreadId(threadId, generateExternalUser(threadId))
         .map(tr => Ok(Json.toJson(tr)))
         .recover {
           case e: InvalidThreadReferenceException =>
@@ -53,4 +53,7 @@ class ThreadReferenceController @Inject() (
         }
     }
   }
+
+  private def generateExternalUser(threadId: String): ExternalUser =
+    ExternalUser.getRecipientById(threadId)
 }

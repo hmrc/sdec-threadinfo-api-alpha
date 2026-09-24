@@ -16,33 +16,29 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.controllers
 
+import play.api.Logging
 import play.api.libs.json.Json
-import play.api.mvc.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, CreateThreadResponse}
-import uk.gov.hmrc.sdecthreadinfoapialpha.repository.ThreadReferenceRepositoryAlgebra
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import uk.gov.hmrc.sdecthreadinfoapialpha.service.ThreadServiceAlgebra
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class ThreadCreateController @Inject() (
-  cc:         ControllerComponents,
-  repository: ThreadReferenceRepositoryAlgebra
+class ThreadController @Inject() (
+  cc:            ControllerComponents,
+  threadService: ThreadServiceAlgebra
 )(using ec: ExecutionContext)
-    extends AbstractController(cc) {
+    extends BackendController(cc)
+    with Logging {
 
-  def createThread(): Action[CreateThreadRequest] =
-    Action.async(parse.json[CreateThreadRequest]) { request =>
-      repository
-        .createThread(request.body)
-        .map { thread =>
-          Created(
-            Json.toJson(
-              CreateThreadResponse(
-                threadReference = thread.id,
-                createdTimeStamp = thread.createdTimeStamp
-              )
-            )
-          )
-        }
+  def getThreadByUserId(pid: String): Action[AnyContent] = {
+    logger.info(s"Getting all threads for $pid")
+    Action.async { implicit request =>
+      request.headers.toMap.foreach { (name, value) =>
+        logger.debug(s"Header name: $name: value: ${value.mkString(",")}")
+      }
+      threadService.getByPID(pid).map(dtos => Ok(Json.toJson(dtos)))
     }
+  }
 }

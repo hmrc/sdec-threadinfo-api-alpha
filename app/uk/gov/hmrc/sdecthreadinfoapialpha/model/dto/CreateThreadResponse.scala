@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.repository
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, ThreadReference}
+import play.api.libs.json.{Json, OFormat}
 
-import scala.concurrent.Future
+import java.time.LocalDateTime
 
-trait ThreadReferenceRepositoryAlgebra {
+final case class CreateThreadResponse(
+  threadReference:  String,
+  createdTimeStamp: LocalDateTime
+)
 
-  def insertThreadReference(threadRef: ThreadReference): Future[Unit]
-
-  def getByThreadReference(id: String): Future[ThreadReference]
-
-  def createThread(request: CreateThreadRequest): Future[ThreadReference]
+object CreateThreadResponse {
+  implicit val format: OFormat[CreateThreadResponse] =
+    Json.format[CreateThreadResponse]
 }

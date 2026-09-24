@@ -16,12 +16,15 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.ThreadReference
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, ThreadReference}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.requests.ExternalUser
 
 import scala.concurrent.Future
 
 trait ThreadReferenceServiceAlgebra {
 
-  def getThreadInfoByThreadId(threadId: String): Future[ThreadReference]
+  def getThreadInfoByThreadId(threadId: String, externalUser: ExternalUser): Future[ThreadReference]
+
+  def createThread(request: CreateThreadRequest): Future[CreateThreadRequest]
 
 }

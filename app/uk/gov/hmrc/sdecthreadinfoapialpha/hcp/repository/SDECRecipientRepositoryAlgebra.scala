@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository
 
-import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECRecipient
 
-import java.time.LocalDate
+import scala.concurrent.Future
 
-final case class ThreadDetails(
-  message:      String,
-  responseDate: LocalDate
-)
+trait SDECRecipientRepositoryAlgebra {
 
-object ThreadDetails {
-  implicit val format: OFormat[ThreadDetails] = Json.format[ThreadDetails]
+  def findById(id: Long): Future[Option[SDECRecipient]]
+
+  def findByInternalId(internalId: String): Future[Option[SDECRecipient]]
+
+  def findAll(): Future[Seq[SDECRecipient]]
+
+  def insert(recipient: SDECRecipient): Future[Long]
+
+  def update(recipient: SDECRecipient): Future[Int]
+
+  def delete(id: Long): Future[Int]
 }

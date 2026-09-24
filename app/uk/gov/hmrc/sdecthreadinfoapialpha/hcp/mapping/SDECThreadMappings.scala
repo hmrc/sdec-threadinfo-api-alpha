@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 
-import play.api.libs.json.{Json, OFormat}
+import slick.jdbc.H2Profile.api.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadStatus
 
-import java.time.LocalDateTime
+object SDECThreadMappings:
 
-final case class CreateThreadResponse(
-  threadReference:  String,
-  createdTimeStamp: LocalDateTime
-)
-
-object CreateThreadResponse {
-  implicit val format: OFormat[CreateThreadResponse] =
-    Json.format[CreateThreadResponse]
-}
+  given BaseColumnType[SDECThreadStatus] =
+    MappedColumnType.base[SDECThreadStatus, String](
+      _.toString,
+      value =>
+        SDECThreadStatus.values
+          .find(_.toString == value)
+          .getOrElse(
+            throw new IllegalArgumentException(
+              s"Unknown SDECThreadStatus: $value"
+            )
+          )
+    )

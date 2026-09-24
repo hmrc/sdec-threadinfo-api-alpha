@@ -14,29 +14,8 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.requests
 
-import play.api.libs.json.*
+import play.api.mvc.{Request, WrappedRequest}
 
-enum ThreadStatus {
-  case Draft
-  case Active
-  case Closed
-  case Archived
-}
-
-object ThreadStatus {
-
-  given Format[ThreadStatus] = Format(
-    Reads {
-      case JsString(value) =>
-        ThreadStatus.values
-          .find(_.toString == value)
-          .map(JsSuccess(_))
-          .getOrElse(JsError(s"Unknown ThreadStatus: $value"))
-
-      case _ => JsError("ThreadStatus must be a string")
-    },
-    Writes(status => JsString(status.toString))
-  )
-}
+case class IdentifierRequest[A](request: Request[A], userId: String) extends WrappedRequest[A](request)

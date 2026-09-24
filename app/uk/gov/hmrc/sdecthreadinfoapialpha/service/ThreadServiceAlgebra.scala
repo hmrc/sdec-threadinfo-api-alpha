@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
-import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadDTO
 
-final case class RecipientDetails(
-  firstName:               String,
-  lastName:                String,
-  email:                   String,
-  phoneNumber:             String,
-  nationalInsuranceNumber: String,
-  hasRelatedCase:          Boolean,
-  caseReferenceNumber:     Option[String]
-)
+import scala.concurrent.Future
 
-object RecipientDetails {
-  implicit val format: OFormat[RecipientDetails] = Json.format[RecipientDetails]
+trait ThreadServiceAlgebra {
+  def getByPID(pid: String): Future[Seq[ThreadDTO]]
 }

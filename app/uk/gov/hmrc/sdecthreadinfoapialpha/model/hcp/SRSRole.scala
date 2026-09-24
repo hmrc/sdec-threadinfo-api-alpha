@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.repository
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, ThreadReference}
+import play.api.libs.json.*
 
-import scala.concurrent.Future
+enum SRSRole {
+  case Supervisor
+  case CaseWorker
+}
 
-trait ThreadReferenceRepositoryAlgebra {
+object SRSRole {
+  given Format[SRSRole] = Format(
+    Reads {
+      case JsString(value) =>
+        SRSRole.values
+          .find(_.toString == value)
+          .map(JsSuccess(_))
+          .getOrElse(JsError(s"Unknown SRS Role: $value"))
 
-  def insertThreadReference(threadRef: ThreadReference): Future[Unit]
-
-  def getByThreadReference(id: String): Future[ThreadReference]
-
-  def createThread(request: CreateThreadRequest): Future[ThreadReference]
+      case _ => JsError("SRS Role must be a string")
+    },
+    Writes(role => JsString(role.toString))
+  )
 }

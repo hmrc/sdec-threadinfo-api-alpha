@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
 import play.api.libs.json.{Json, OFormat}
 
-import java.time.LocalDate
-
-final case class ThreadSummary(
-  threadReference:  String,
-  relatedReference: Option[String],
-  externalContact:  String,
-  status:           String,
-  waitingOn:        String,
-  deadline:         Option[LocalDate]
+final case class CreateThreadRequest(
+  recipientDetails: RecipientDetails,
+  threadDetails:    ThreadDetails
 )
 
-object ThreadSummary {
-  implicit val format: OFormat[ThreadSummary] =
-    Json.format[ThreadSummary]
+object CreateThreadRequest {
+  implicit val format: OFormat[CreateThreadRequest] =
+    Json.format[CreateThreadRequest]
 }
