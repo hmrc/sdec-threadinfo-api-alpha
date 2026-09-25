@@ -19,8 +19,11 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 import play.api.libs.json.*
 
 enum SRSRole {
-  case Supervisor
-  case CaseWorker
+  case SDEC_Child_Benefit_Manager
+  case SDEC_Child_Benefit_User
+  case SDEC_VAT_Manager
+  case SDEC_VAT_User
+  case SDEC_Audit_User
 }
 
 object SRSRole {

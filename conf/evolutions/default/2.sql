@@ -5,18 +5,22 @@ VALUES
     (1, 1001, 'John Test'),
     (2, 1002, 'James Brown'),
     (3, 1003, 'Jane Doe'),
-    (4, 1004, 'Mary Lamb');
+    (4, 1004, 'Mary Lamb'),
+    (5, 123456, 'VAT Success Test User');
 
 INSERT INTO sdec_team (id, srs_name, is_task_based)
 VALUES (1, 'child_benefit', true),
-       (2, 'vat', false);
+       (2, 'vat', false),
+       (3, 'audit', false);
 
 INSERT INTO staff_role (id, staff_id, team_id, srs_role)
-VALUES (1, 1, 1, 'caseworker'),
-       (2, 1, 2, 'supervisor'),
-       (3, 2, 1, 'caseworker'),
-       (4, 3, 2, 'supervisor'),
-       (5, 4, 1, 'supervisor');
+VALUES (1, 1, 1, 'SDEC_Child_Benefit_Manager'),
+       (2, 2, 1, 'SDEC_Child_Benefit_User'),
+       (3, 3, 2, 'SDEC_VAT_Manager'),
+       (4, 4, 3, 'SDEC_Audit_User'),
+
+        -- Success scenario from Stride stub
+       (5, 5, 2, 'SDEC_VAT_User');
 
 INSERT INTO sdec_recipient (id, internal_id, first_name, last_name, email, phone_number, nino)
 VALUES (1, '12345', 'John', 'Smith', 'user@test.com', NULL, 'WM111111D');

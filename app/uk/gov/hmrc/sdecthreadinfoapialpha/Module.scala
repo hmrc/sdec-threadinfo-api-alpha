@@ -42,5 +42,6 @@ class Module extends AppModule:
       bind[ThreadServiceAlgebra].to[ThreadService],
       bind[ThreadReferenceServiceAlgebra].to[ThreadReferenceService],
       bind[ThreadSummaryServiceAlgebra].to[ThreadSummaryService],
-      bind[ThreadReferenceRepositoryAlgebra].to[ThreadReferenceRepository]
+      bind[ThreadReferenceRepositoryAlgebra].to[ThreadReferenceRepository],
+      bind[StaffServiceAlgebra].to[StaffService]
     )
