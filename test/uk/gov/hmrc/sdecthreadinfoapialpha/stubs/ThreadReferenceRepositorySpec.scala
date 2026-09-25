@@ -20,6 +20,7 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, RecipientDetails, ThreadDetails, ThreadReference}
 
 import java.time.LocalDate
 
@@ -27,6 +28,7 @@ class ThreadReferenceRepositorySpec extends AnyWordSpec with Matchers {
 
   private def request(team: Team) = CreateThreadRequest(
     threadCreator = "PID123",
+    threadOwner = None,
     owningTeam = team,
     recipientDetails = RecipientDetails(
       firstName = "John",

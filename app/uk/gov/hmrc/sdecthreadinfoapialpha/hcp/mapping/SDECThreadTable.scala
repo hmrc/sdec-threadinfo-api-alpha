@@ -43,6 +43,10 @@ class SDECThreadTable(tag: Tag) extends Table[SDECThread](tag, "sdec_thread") {
   def nino:                 Rep[Option[String]]    = column[Option[String]]("nino")
   def message:              Rep[String]            = column[String]("message")
   def requiredBy:           Rep[Option[LocalDate]] = column[Option[LocalDate]]("required_by")
+  def threadCreator:        Rep[String]            = column[String]("threadCreator")
+  def threadOwner:          Rep[Option[String]]    = column[Option[String]]("threadOwner")
+  def owningTeamName:       Rep[String]            = column[String]("teamName")
+  def owningTeamType:       Rep[Boolean]           = column[Boolean]("teamType")
 
   override def * : ProvenShape[SDECThread] =
     (
@@ -58,6 +62,10 @@ class SDECThreadTable(tag: Tag) extends Table[SDECThread](tag, "sdec_thread") {
       email,
       nino,
       message,
-      requiredBy
+      requiredBy,
+      threadCreator,
+      threadOwner,
+      owningTeamName,
+      owningTeamType
     ).mapTo[SDECThread]
 }

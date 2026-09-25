@@ -81,6 +81,6 @@ class ThreadReferenceService @Inject() (
       case (Some(t), None) =>
         ThreadReference.convertFromThreadEntity(t)
       case (_, _) =>
-        ThreadReference.getEmptyThread()
+        ThreadReference.getEmptyThread
 
 }

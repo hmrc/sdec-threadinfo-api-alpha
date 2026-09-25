@@ -17,9 +17,11 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
 
 final case class CreateThreadRequest(
   threadCreator:    String,
+  threadOwner:      Option[String],
   owningTeam:       Team,
   recipientDetails: RecipientDetails,
   threadDetails:    ThreadDetails

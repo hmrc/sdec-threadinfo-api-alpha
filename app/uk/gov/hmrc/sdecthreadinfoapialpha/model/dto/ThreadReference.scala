@@ -17,6 +17,7 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
 import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadStatus.Draft
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECThread}
 
@@ -29,6 +30,9 @@ case class ThreadReference(
   lastUpdatedTimeStamp:    LocalDateTime,
   threadExpiryDate:        LocalDate,
   associatedCaseReference: String,
+  threadCreator:           String,
+  threadOwner:             Option[String],
+  owningTeam:              Team,
   recipientDetails:        RecipientDetails,
   threadDetails:           ThreadDetails
 )
@@ -45,6 +49,9 @@ object ThreadReference {
       lastUpdatedTimeStamp = thread.lastUpdatedTimeStamp,
       threadExpiryDate = thread.threadExpiryDate,
       associatedCaseReference = thread.caseReference.getOrElse("No case reference"),
+      threadCreator = thread.threadCreator,
+      threadOwner = thread.threadOwner,
+      owningTeam = Team(thread.owningTeamName, thread.owningTeamType),
       recipientDetails = RecipientDetails(
         firstName = recipient.firstName,
         lastName = recipient.lastName,
@@ -68,14 +75,17 @@ object ThreadReference {
       lastUpdatedTimeStamp = thread.lastUpdatedTimeStamp,
       threadExpiryDate = thread.threadExpiryDate,
       associatedCaseReference = thread.caseReference.getOrElse("No case reference"),
-      recipientDetails = getEmptyRecipient(),
+      threadCreator = thread.threadCreator,
+      threadOwner = thread.threadOwner,
+      owningTeam = Team(thread.owningTeamName, thread.owningTeamType),
+      recipientDetails = getEmptyRecipient,
       threadDetails = ThreadDetails(
         message = thread.message,
         responseDate = thread.requiredBy.getOrElse(LocalDate.now().plusYears(1L))
       )
     )
 
-  def getEmptyThread(): ThreadReference =
+  def getEmptyThread: ThreadReference =
     ThreadReference(
       id = "",
       status = Draft,
@@ -83,11 +93,14 @@ object ThreadReference {
       lastUpdatedTimeStamp = LocalDateTime.now(),
       threadExpiryDate = LocalDate.now(),
       associatedCaseReference = "",
-      recipientDetails = getEmptyRecipient(),
+      threadCreator = "",
+      threadOwner = None,
+      owningTeam = Team(name = "", taskBased = false),
+      recipientDetails = getEmptyRecipient,
       threadDetails = ThreadDetails(message = "", responseDate = LocalDate.now())
     )
 
-  private def getEmptyRecipient(): RecipientDetails =
+  private def getEmptyRecipient: RecipientDetails =
     RecipientDetails(
       firstName = "",
       lastName = "",
