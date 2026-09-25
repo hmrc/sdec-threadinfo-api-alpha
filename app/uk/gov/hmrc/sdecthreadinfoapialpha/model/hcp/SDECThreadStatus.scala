@@ -14,17 +14,30 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.repository
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, ThreadReference}
+import play.api.libs.json.*
 
-import scala.concurrent.Future
+enum SDECThreadStatus {
 
-trait ThreadReferenceRepositoryAlgebra {
+  case Draft
+  case Active
+  case Closed
+  case Archived
+}
 
-  def insertThreadReference(threadRef: ThreadReference): Future[Unit]
+object SDECThreadStatus {
 
-  def getByThreadReference(id: String): Future[ThreadReference]
+  given Format[SDECThreadStatus] = Format(
+    Reads {
+      case JsString(value) =>
+        SDECThreadStatus.values
+          .find(_.toString == value)
+          .map(JsSuccess(_))
+          .getOrElse(JsError(s"Unknown SDECThreadStatus: $value"))
 
-  def createThread(request: CreateThreadRequest): Future[ThreadReference]
+      case _ => JsError("SDECThreadStatus must be a string")
+    },
+    Writes(status => JsString(status.toString))
+  )
 }

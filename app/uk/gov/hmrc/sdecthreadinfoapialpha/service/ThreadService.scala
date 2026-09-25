@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.repository
+package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, ThreadReference}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadDTO
 
 import scala.concurrent.Future
 
-trait ThreadReferenceRepositoryAlgebra {
+class ThreadService() extends ThreadServiceAlgebra {
 
-  def insertThreadReference(threadRef: ThreadReference): Future[Unit]
-
-  def getByThreadReference(id: String): Future[ThreadReference]
-
-  def createThread(request: CreateThreadRequest): Future[ThreadReference]
+  override def getByPID(pid: String): Future[Seq[ThreadDTO]] = ???
 }

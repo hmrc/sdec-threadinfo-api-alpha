@@ -14,26 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
 import play.api.libs.json.{Format, Json}
 
-import java.time.{LocalDate, LocalDateTime}
+case class ThreadDTO()
 
-case class ThreadReference(
-  id:                      String,
-  status:                  ThreadStatus,
-  createdTimeStamp:        LocalDateTime,
-  lastUpdatedTimeStamp:    LocalDateTime,
-  threadExpiryDate:        LocalDate,
-  associatedCaseReference: String,
-  threadCreator:           String,
-  threadOwner:             Option[String],
-  owningTeam:              Team,
-  recipientDetails:        RecipientDetails,
-  threadDetails:           ThreadDetails
-)
-
-object ThreadReference {
-  given Format[ThreadReference] = Json.format[ThreadReference]
+object ThreadDTO {
+  given format: Format[ThreadDTO] = Json.format[ThreadDTO]
 }

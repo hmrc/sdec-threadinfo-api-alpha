@@ -1,0 +1,52 @@
+/*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
+
+import play.api.libs.json.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadStatus
+
+enum ThreadStatus {
+  case Draft
+  case Active
+  case Closed
+  case Archived
+}
+
+object ThreadStatus {
+
+  given Format[ThreadStatus] = Format(
+    Reads {
+      case JsString(value) =>
+        ThreadStatus.values
+          .find(_.toString == value)
+          .map(JsSuccess(_))
+          .getOrElse(JsError(s"Unknown ThreadStatus: $value"))
+
+      case _ => JsError("ThreadStatus must be a string")
+    },
+    Writes(status => JsString(status.toString))
+  )
+
+  def fromEntity(entity: SDECThreadStatus): ThreadStatus =
+    entity match {
+      case hcp.SDECThreadStatus.Draft    => Draft
+      case hcp.SDECThreadStatus.Active   => Active
+      case hcp.SDECThreadStatus.Closed   => Closed
+      case hcp.SDECThreadStatus.Archived => Archived
+    }
+}

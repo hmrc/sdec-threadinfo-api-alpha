@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.repository
+package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, ThreadReference}
+import slick.jdbc.H2Profile.api.*
+import slick.lifted.ProvenShape
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECStaff
 
-import scala.concurrent.Future
+class SDECStaffTable(tag: Tag) extends Table[SDECStaff](tag, "sdec_staff") {
 
-trait ThreadReferenceRepositoryAlgebra {
+  def id:   Rep[Long]   = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def pid:  Rep[String] = column[String]("pid")
+  def name: Rep[String] = column[String]("name")
 
-  def insertThreadReference(threadRef: ThreadReference): Future[Unit]
-
-  def getByThreadReference(id: String): Future[ThreadReference]
-
-  def createThread(request: CreateThreadRequest): Future[ThreadReference]
+  override def * : ProvenShape[SDECStaff] =
+    (id, pid, name).mapTo[SDECStaff]
 }

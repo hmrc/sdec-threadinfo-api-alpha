@@ -14,29 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 
-import play.api.libs.json.*
+import play.api.libs.json.{Json, OFormat}
 
-enum ThreadStatus {
-  case Draft
-  case Active
-  case Closed
-  case Archived
-}
+case class StaffRole(
+  id:      Long,
+  staffId: Long,
+  teamId:  Long,
+  srsRole: SRSRole
+)
 
-object ThreadStatus {
-
-  given Format[ThreadStatus] = Format(
-    Reads {
-      case JsString(value) =>
-        ThreadStatus.values
-          .find(_.toString == value)
-          .map(JsSuccess(_))
-          .getOrElse(JsError(s"Unknown ThreadStatus: $value"))
-
-      case _ => JsError("ThreadStatus must be a string")
-    },
-    Writes(status => JsString(status.toString))
-  )
+object StaffRole {
+  given OFormat[StaffRole] = Json.format[StaffRole]
 }

@@ -18,7 +18,7 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
 import play.api.Logging
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.ThreadSummaryRetrievalException
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.ThreadSummary
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadSummary
 import uk.gov.hmrc.sdecthreadinfoapialpha.stubs.ThreadSummaryRepository
 
 import javax.inject.{Inject, Singleton}

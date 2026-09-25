@@ -14,18 +14,8 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.requests
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.mvc.{Request, WrappedRequest}
 
-import java.time.LocalDateTime
-
-final case class CreateThreadResponse(
-  threadReference:  String,
-  createdTimeStamp: LocalDateTime
-)
-
-object CreateThreadResponse {
-  implicit val format: OFormat[CreateThreadResponse] =
-    Json.format[CreateThreadResponse]
-}
+case class IdentifierRequest[A](request: Request[A], userId: String) extends WrappedRequest[A](request)

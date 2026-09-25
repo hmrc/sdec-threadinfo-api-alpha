@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.repository
+package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, ThreadReference}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECTeam
 
 import scala.concurrent.Future
 
-trait ThreadReferenceRepositoryAlgebra {
+trait SDECTeamRepositoryAlgebra {
 
-  def insertThreadReference(threadRef: ThreadReference): Future[Unit]
+  def findById(id: Long): Future[Option[SDECTeam]]
 
-  def getByThreadReference(id: String): Future[ThreadReference]
+  def findBySrsName(srsName: String): Future[Option[SDECTeam]]
 
-  def createThread(request: CreateThreadRequest): Future[ThreadReference]
+  def findAll(): Future[Seq[SDECTeam]]
+
+  def insert(team: SDECTeam): Future[Long]
+
+  def update(team: SDECTeam): Future[Int]
+
+  def delete(id: Long): Future[Int]
 }

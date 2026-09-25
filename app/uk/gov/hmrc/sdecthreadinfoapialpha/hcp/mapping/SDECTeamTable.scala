@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.repository
+package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
+import slick.jdbc.H2Profile.api.*
+import slick.lifted.ProvenShape
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECTeam
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, ThreadReference}
+class SDECTeamTable(tag: Tag) extends Table[SDECTeam](tag, "sdec_team") {
 
-import scala.concurrent.Future
+  def id:          Rep[Long]    = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def srsName:     Rep[String]  = column[String]("srs_name")
+  def isTaskBased: Rep[Boolean] = column[Boolean]("is_task_based")
 
-trait ThreadReferenceRepositoryAlgebra {
-
-  def insertThreadReference(threadRef: ThreadReference): Future[Unit]
-
-  def getByThreadReference(id: String): Future[ThreadReference]
-
-  def createThread(request: CreateThreadRequest): Future[ThreadReference]
+  override def * : ProvenShape[SDECTeam] =
+    (id, srsName, isTaskBased).mapTo[SDECTeam]
 }

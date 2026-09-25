@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.dto
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadStatus
 
 class ThreadStatusSpec extends AnyWordSpec with Matchers {
   "ThreadStatus JSON format" should {
