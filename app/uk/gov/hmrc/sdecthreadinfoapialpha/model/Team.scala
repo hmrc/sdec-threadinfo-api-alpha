@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
+package uk.gov.hmrc.sdecthreadinfoapialpha.model
 
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
+import play.api.libs.json.{Format, Json}
 
-final case class CreateThreadRequest(
-  threadCreator:    String,
-  threadOwner:      Option[String],
-  owningTeam:       Team,
-  recipientDetails: RecipientDetails,
-  threadDetails:    ThreadDetails
-)
+final case class Team(name: String, taskBased: Boolean)
 
-object CreateThreadRequest {
-  given OFormat[CreateThreadRequest] = Json.format[CreateThreadRequest]
+object Team {
+  given Format[Team] = Json.format[Team]
 }

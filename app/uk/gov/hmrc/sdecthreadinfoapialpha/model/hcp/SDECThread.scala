@@ -33,7 +33,11 @@ case class SDECThread(
   email:                String,
   nino:                 Option[String],
   message:              String,
-  requiredBy:           Option[LocalDate]
+  requiredBy:           Option[LocalDate],
+  threadCreator:        String,
+  threadOwner:          Option[String],
+  owningTeamName:       String,
+  owningTeamType:       Boolean
 )
 
 object SDECThread {
