@@ -19,21 +19,22 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.controllers
 import play.api.libs.json.Json
 import play.api.mvc.*
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, CreateThreadResponse}
-import uk.gov.hmrc.sdecthreadinfoapialpha.repository.ThreadReferenceRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.requests.ExternalUser
+import uk.gov.hmrc.sdecthreadinfoapialpha.service.ThreadReferenceServiceAlgebra
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ThreadCreateController @Inject() (
-  cc:         ControllerComponents,
-  repository: ThreadReferenceRepositoryAlgebra
+  cc:                     ControllerComponents,
+  threadReferenceService: ThreadReferenceServiceAlgebra
 )(using ec: ExecutionContext)
     extends AbstractController(cc) {
 
   def createThread(): Action[CreateThreadRequest] =
     Action.async(parse.json[CreateThreadRequest]) { request =>
-      repository
-        .createThread(request.body)
+      threadReferenceService
+        .createThread(request.body, ExternalUser.getExternalUserByRecipientDetails(request.body.recipientDetails))
         .map { thread =>
           Created(
             Json.toJson(

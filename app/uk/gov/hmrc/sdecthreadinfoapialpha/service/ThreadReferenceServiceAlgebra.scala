@@ -25,6 +25,6 @@ trait ThreadReferenceServiceAlgebra {
 
   def getThreadInfoByThreadId(threadId: String, externalUser: ExternalUser): Future[ThreadReference]
 
-  def createThread(request: CreateThreadRequest): Future[CreateThreadRequest]
+  def createThread(request: CreateThreadRequest, externalUser: ExternalUser): Future[ThreadReference]
 
 }
