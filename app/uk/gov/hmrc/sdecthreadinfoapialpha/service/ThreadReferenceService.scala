@@ -19,6 +19,7 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.service
 import play.api.Logging
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.InvalidThreadReferenceException
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.{SDECRecipientRepositoryAlgebra, SDECThreadRepositoryAlgebra}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, RecipientDetails, ThreadDetails, ThreadReference}
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadStatus.Active
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECThread}
@@ -53,7 +54,13 @@ class ThreadReferenceService @Inject() (
   }
 
   override def createThread(request: CreateThreadRequest, externalUser: ExternalUser): Future[ThreadReference] = {
-    val thread = getThreadFromRequest(request.recipientDetails, request.threadDetails)
+    val thread = getThreadFromRequest(
+      request.threadCreator,
+      request.threadOwner,
+      request.owningTeam,
+      request.recipientDetails,
+      request.threadDetails
+    )
     for {
       savedRecipient <- getOrStoreRecipient(None, externalUser)
       sdecthread = thread.copy(recipientId = savedRecipient.map(_.id))
@@ -62,7 +69,13 @@ class ThreadReferenceService @Inject() (
     } yield convertEntityToDTO(savedThread, savedRecipient)
   }
 
-  private def getThreadFromRequest(recipient: RecipientDetails, thread: ThreadDetails): SDECThread =
+  private def getThreadFromRequest(
+    creator:   String,
+    owner:     Option[String],
+    team:      Team,
+    recipient: RecipientDetails,
+    thread:    ThreadDetails
+  ): SDECThread =
     SDECThread(
       id = 0L,
       reference = Random.alphanumeric.take(12).mkString.toUpperCase,
@@ -76,7 +89,11 @@ class ThreadReferenceService @Inject() (
       email = recipient.email,
       nino = Some(recipient.nationalInsuranceNumber),
       message = thread.message,
-      requiredBy = Some(thread.responseDate)
+      requiredBy = Some(thread.responseDate),
+      threadCreator = creator,
+      threadOwner = owner,
+      owningTeamName = team.name,
+      owningTeamType = team.taskBased
     )
 
   private def getRecipientIdFromThread(maybeThread: Option[SDECThread]): Option[Long] =
