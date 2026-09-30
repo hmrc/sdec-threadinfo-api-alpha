@@ -17,16 +17,15 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECStaff
 
-final case class CreateThreadRequest(
-  creatorPid:       String,
-  creatorName:      Option[String],
-  owningTeam:       Team,
-  recipientDetails: RecipientDetails,
-  threadDetails:    ThreadDetails
-)
+final case class StaffDetails(id: Long, pid: String, name: String)
 
-object CreateThreadRequest {
-  given OFormat[CreateThreadRequest] = Json.format[CreateThreadRequest]
+object StaffDetails {
+  given OFormat[StaffDetails] = Json.format[StaffDetails]
+
+  val empty: StaffDetails = StaffDetails(0L, "", "")
+
+  def fromEntity(staff: SDECStaff): StaffDetails =
+    StaffDetails(staff.id, staff.pid, staff.name)
 }

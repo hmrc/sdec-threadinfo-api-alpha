@@ -19,19 +19,19 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadStatus.Draft
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECThread}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECStaff, SDECThread}
 
 import java.time.{LocalDate, LocalDateTime}
 
 case class ThreadReference(
   id:                      String,
   status:                  ThreadStatus,
+  createdBy:               StaffDetails,
   createdTimeStamp:        LocalDateTime,
   lastUpdatedTimeStamp:    LocalDateTime,
   threadExpiryDate:        LocalDate,
   associatedCaseReference: String,
-  threadCreator:           String,
-  threadOwner:             Option[String],
+  threadOwner:             Option[StaffDetails],
   owningTeam:              Team,
   recipientDetails:        RecipientDetails,
   threadDetails:           ThreadDetails
@@ -39,46 +39,35 @@ case class ThreadReference(
 
 object ThreadReference {
 
-  implicit val format: Format[ThreadReference] = Json.format[ThreadReference]
+  given Format[ThreadReference] = Json.format[ThreadReference]
 
-  def convertFromEntities(thread: SDECThread, recipient: SDECRecipient): ThreadReference =
+  def convertFromEntities(
+    thread:    SDECThread,
+    recipient: Option[SDECRecipient],
+    creator:   SDECStaff,
+    owner:     Option[SDECStaff]
+  ): ThreadReference =
     ThreadReference(
       id = thread.reference,
       status = ThreadStatus.fromEntity(thread.status),
+      createdBy = StaffDetails.fromEntity(creator),
       createdTimeStamp = thread.createdTimeStamp,
       lastUpdatedTimeStamp = thread.lastUpdatedTimeStamp,
       threadExpiryDate = thread.threadExpiryDate,
       associatedCaseReference = thread.caseReference.getOrElse("No case reference"),
-      threadCreator = thread.threadCreator,
-      threadOwner = thread.threadOwner,
+      threadOwner = owner.map(StaffDetails.fromEntity),
       owningTeam = Team(thread.owningTeamName, thread.owningTeamType),
-      recipientDetails = RecipientDetails(
-        firstName = recipient.firstName,
-        lastName = recipient.lastName,
-        email = recipient.email,
-        phoneNumber = recipient.phoneNumber.getOrElse("No phone number"),
-        nationalInsuranceNumber = recipient.nino,
-        hasRelatedCase = thread.caseReference.isDefined,
-        caseReferenceNumber = thread.caseReference
-      ),
-      threadDetails = ThreadDetails(
-        message = thread.message,
-        responseDate = thread.requiredBy.getOrElse(LocalDate.now().plusYears(1L))
-      )
-    )
-
-  def convertFromThreadEntity(thread: SDECThread): ThreadReference =
-    ThreadReference(
-      id = thread.reference,
-      status = ThreadStatus.fromEntity(thread.status),
-      createdTimeStamp = thread.createdTimeStamp,
-      lastUpdatedTimeStamp = thread.lastUpdatedTimeStamp,
-      threadExpiryDate = thread.threadExpiryDate,
-      associatedCaseReference = thread.caseReference.getOrElse("No case reference"),
-      threadCreator = thread.threadCreator,
-      threadOwner = thread.threadOwner,
-      owningTeam = Team(thread.owningTeamName, thread.owningTeamType),
-      recipientDetails = getEmptyRecipient,
+      recipientDetails = recipient.fold(getEmptyRecipient) { r =>
+        RecipientDetails(
+          firstName = r.firstName,
+          lastName = r.lastName,
+          email = r.email,
+          phoneNumber = r.phoneNumber.getOrElse("No phone number"),
+          nationalInsuranceNumber = r.nino,
+          hasRelatedCase = thread.caseReference.isDefined,
+          caseReferenceNumber = thread.caseReference
+        )
+      },
       threadDetails = ThreadDetails(
         message = thread.message,
         responseDate = thread.requiredBy.getOrElse(LocalDate.now().plusYears(1L))
@@ -89,11 +78,11 @@ object ThreadReference {
     ThreadReference(
       id = "",
       status = Draft,
+      createdBy = StaffDetails.empty,
       createdTimeStamp = LocalDateTime.now(),
       lastUpdatedTimeStamp = LocalDateTime.now(),
       threadExpiryDate = LocalDate.now(),
       associatedCaseReference = "",
-      threadCreator = "",
       threadOwner = None,
       owningTeam = Team(name = "", taskBased = false),
       recipientDetails = getEmptyRecipient,
@@ -110,5 +99,4 @@ object ThreadReference {
       hasRelatedCase = false,
       caseReferenceNumber = None
     )
-
 }

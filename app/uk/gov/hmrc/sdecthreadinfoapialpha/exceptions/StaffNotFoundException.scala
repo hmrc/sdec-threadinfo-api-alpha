@@ -14,19 +14,6 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
+package uk.gov.hmrc.sdecthreadinfoapialpha.exceptions
 
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
-
-final case class CreateThreadRequest(
-  creatorPid:       String,
-  creatorName:      Option[String],
-  owningTeam:       Team,
-  recipientDetails: RecipientDetails,
-  threadDetails:    ThreadDetails
-)
-
-object CreateThreadRequest {
-  given OFormat[CreateThreadRequest] = Json.format[CreateThreadRequest]
-}
+case class StaffNotFoundException(id: String) extends RuntimeException(s"Staff [$id] not found")

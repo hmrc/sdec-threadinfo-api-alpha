@@ -34,8 +34,7 @@ case class SDECThread(
   nino:                 Option[String],
   message:              String,
   requiredBy:           Option[LocalDate],
-  threadCreator:        String,
-  threadOwner:          Option[String],
+  threadOwnerId:        Option[Long],
   owningTeamName:       String,
   owningTeamType:       Boolean
 )

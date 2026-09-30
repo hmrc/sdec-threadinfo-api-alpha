@@ -43,8 +43,7 @@ class SDECThreadTable(tag: Tag) extends Table[SDECThread](tag, "sdec_thread") {
   def nino:                 Rep[Option[String]]    = column[Option[String]]("nino")
   def message:              Rep[String]            = column[String]("message")
   def requiredBy:           Rep[Option[LocalDate]] = column[Option[LocalDate]]("required_by")
-  def threadCreator:        Rep[String]            = column[String]("thread_creator")
-  def threadOwner:          Rep[Option[String]]    = column[Option[String]]("thread_owner")
+  def threadOwnerId:        Rep[Option[Long]]      = column[Option[Long]]("thread_owner_id")
   def owningTeamName:       Rep[String]            = column[String]("owning_team_name")
   def owningTeamType:       Rep[Boolean]           = column[Boolean]("owning_team_type")
 
@@ -63,8 +62,7 @@ class SDECThreadTable(tag: Tag) extends Table[SDECThread](tag, "sdec_thread") {
       nino,
       message,
       requiredBy,
-      threadCreator,
-      threadOwner,
+      threadOwnerId,
       owningTeamName,
       owningTeamType
     ).mapTo[SDECThread]
