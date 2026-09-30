@@ -48,7 +48,7 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
           lastName = "Smith",
           email = "some@example.com",
           phoneNumber = "07123456789",
-          nationalInsuranceNumber = "QQQQQQQQC",
+          nationalInsuranceNumber = "AB123456C",
           hasRelatedCase = false,
           caseReferenceNumber = None
         ),
@@ -72,7 +72,7 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
           lastName = "",
           email = "some@example.com",
           phoneNumber = "07123456789",
-          nationalInsuranceNumber = "QQQQQQQQC",
+          nationalInsuranceNumber = "AB123456C",
           hasRelatedCase = false,
           caseReferenceNumber = None
         ),
