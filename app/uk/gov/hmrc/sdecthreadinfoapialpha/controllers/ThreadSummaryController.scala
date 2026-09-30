@@ -21,6 +21,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.ThreadSummaryRetrievalException
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.query.ThreadSummaryQuery
 import uk.gov.hmrc.sdecthreadinfoapialpha.service.ThreadSummaryServiceAlgebra
 
 import javax.inject.{Inject, Singleton}
@@ -30,14 +31,13 @@ import scala.concurrent.ExecutionContext
 class ThreadSummaryController @Inject() (
   cc:                   ControllerComponents,
   threadSummaryService: ThreadSummaryServiceAlgebra
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends BackendController(cc)
     with Logging {
 
-  def getAll: Action[AnyContent] = Action.async {
-    logger.info("Getting all thread summaries")
-
-    threadSummaryService.getAll
+  def getAll(query: ThreadSummaryQuery): Action[AnyContent] = Action.async {
+    threadSummaryService
+      .getAll(query)
       .map(threads => Ok(Json.toJson(threads)))
       .recover { case exception: ThreadSummaryRetrievalException =>
         logger.error(exception.getMessage, exception)
@@ -47,4 +47,5 @@ class ThreadSummaryController @Inject() (
         )
       }
   }
+
 }

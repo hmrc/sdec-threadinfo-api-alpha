@@ -19,6 +19,7 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.service
 import play.api.Logging
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.ThreadSummaryRetrievalException
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadSummary
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.query.ThreadSummaryQuery
 import uk.gov.hmrc.sdecthreadinfoapialpha.stubs.ThreadSummaryRepository
 
 import javax.inject.{Inject, Singleton}
@@ -32,8 +33,9 @@ class ThreadSummaryService @Inject() (
     extends ThreadSummaryServiceAlgebra
     with Logging {
 
-  override def getAll: Future[Seq[ThreadSummary]] =
-    threadSummaryRepository.getAll
+  override def getAll(query: ThreadSummaryQuery): Future[Seq[ThreadSummary]] =
+    threadSummaryRepository
+      .getAll(query)
       .recoverWith { case NonFatal(exception) =>
         logger.error("Failed to retrieve thread summaries", exception)
         Future.failed(ThreadSummaryRetrievalException(exception))
