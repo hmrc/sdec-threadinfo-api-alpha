@@ -1,4 +1,3 @@
-import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings
 
 val appName = "sdec-threadinfo-api-alpha"
