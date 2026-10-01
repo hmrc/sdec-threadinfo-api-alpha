@@ -19,12 +19,15 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.service
 import play.api.Logging
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.InvalidThreadReferenceException
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.{SDECRecipientRepositoryAlgebra, SDECThreadRepositoryAlgebra}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, ThreadReference}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, RecipientDetails, ThreadDetails, ThreadReference}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadStatus.Active
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECThread}
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.requests.ExternalUser
 
+import java.time.{LocalDate, LocalDateTime}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Random
 
 @Singleton
 class ThreadReferenceService @Inject() (
@@ -49,7 +52,32 @@ class ThreadReferenceService @Inject() (
     }
   }
 
-  override def createThread(request: CreateThreadRequest): Future[CreateThreadRequest] = ???
+  override def createThread(request: CreateThreadRequest, externalUser: ExternalUser): Future[ThreadReference] = {
+    val thread = getThreadFromRequest(request.recipientDetails, request.threadDetails)
+    for {
+      savedRecipient <- getOrStoreRecipient(None, externalUser)
+      sdecthread = thread.copy(recipientId = savedRecipient.map(_.id))
+      threadId    <- threadRepository.insert(sdecthread)
+      savedThread <- threadRepository.findById(threadId)
+    } yield convertEntityToDTO(savedThread, savedRecipient)
+  }
+
+  private def getThreadFromRequest(recipient: RecipientDetails, thread: ThreadDetails): SDECThread =
+    SDECThread(
+      id = 0L,
+      reference = Random.alphanumeric.take(12).mkString.toUpperCase,
+      status = Active,
+      createdBy = Random.between(1L, 5L),
+      createdTimeStamp = LocalDateTime.now(),
+      lastUpdatedTimeStamp = LocalDateTime.now(),
+      threadExpiryDate = LocalDate.now.plusMonths(3L),
+      caseReference = recipient.caseReferenceNumber,
+      recipientId = None,
+      email = recipient.email,
+      nino = Some(recipient.nationalInsuranceNumber),
+      message = thread.message,
+      requiredBy = Some(thread.responseDate)
+    )
 
   private def getRecipientIdFromThread(maybeThread: Option[SDECThread]): Option[Long] =
     maybeThread match {

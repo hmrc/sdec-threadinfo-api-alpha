@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.model.requests
 
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.RecipientDetails
+
 import scala.util.Random
 
 case class ExternalUser(
@@ -29,16 +31,26 @@ case class ExternalUser(
 
 object ExternalUser {
 
+  def getExternalUserByRecipientDetails(details: RecipientDetails): ExternalUser =
+    ExternalUser(
+      internalId = Some(Random.alphanumeric.take(10).mkString),
+      firstName = details.firstName,
+      lastName = details.lastName,
+      email = details.email,
+      phoneNumber = Option(details.phoneNumber),
+      nino = details.nationalInsuranceNumber
+    )
+
   def getRecipientById(threadId: String): ExternalUser =
     if threadId == "THREAD1000AA" then ExternalUser(Some("12345"), "John", "Smith", "user@test.com", None, "WM111111D")
     else
       ExternalUser(
-        Some(Random.alphanumeric.mkString),
-        Random.alphanumeric.dropWhile(_.isDigit).mkString,
-        Random.alphanumeric.dropWhile(_.isDigit).mkString,
-        Random.alphanumeric.dropWhile(_.isDigit).mkString,
+        Some(Random.alphanumeric.take(5).mkString),
+        Random.alphanumeric.dropWhile(_.isDigit).take(10).mkString,
+        Random.alphanumeric.dropWhile(_.isDigit).take(10).mkString,
+        Random.alphanumeric.dropWhile(_.isDigit).take(15).mkString,
         None,
-        Random.alphanumeric.dropWhile(_.isDigit).mkString
+        ""
       )
 
 }

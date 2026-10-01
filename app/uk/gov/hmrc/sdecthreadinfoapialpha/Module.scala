@@ -43,5 +43,6 @@ class Module extends AppModule:
       bind[ThreadReferenceServiceAlgebra].to[ThreadReferenceService],
       bind[ThreadSummaryServiceAlgebra].to[ThreadSummaryService],
       bind[ThreadReferenceRepositoryAlgebra].to[ThreadReferenceRepository],
-      bind[StaffServiceAlgebra].to[StaffService]
+      bind[StaffServiceAlgebra].to[StaffService],
+      bind[H2Server].toSelf.eagerly()
     )

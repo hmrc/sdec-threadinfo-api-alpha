@@ -14,17 +14,30 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.service
+package uk.gov.hmrc.sdecthreadinfoapialpha
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, ThreadReference}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.requests.ExternalUser
+import org.h2.tools.Server
+import play.api.inject.ApplicationLifecycle
 
-import scala.concurrent.Future
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-trait ThreadReferenceServiceAlgebra {
+class H2Server @Inject() (
+  lifecycle: ApplicationLifecycle
+)(using ExecutionContext) {
 
-  def getThreadInfoByThreadId(threadId: String, externalUser: ExternalUser): Future[ThreadReference]
+  private val server = Server
+    .createTcpServer(
+      "-tcp",
+      "-tcpPort",
+      "9092",
+      "-tcpAllowOthers"
+    )
+    .start()
 
-  def createThread(request: CreateThreadRequest, externalUser: ExternalUser): Future[ThreadReference]
-
+  lifecycle.addStopHook { () =>
+    Future {
+      server.stop()
+    }
+  }
 }

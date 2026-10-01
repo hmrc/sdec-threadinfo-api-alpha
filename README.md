@@ -1,7 +1,13 @@
 
 # sdec-threadinfo-api-alpha
 
-This is a placeholder README.md for a new repository
+## H2 Database
+There is a local H2 database running on port 9092. You can use the following properties to connect to using SQL IDE,
+such as DataGrip:
+
+- User: sa
+- Password: ""
+- URL: jdbc:h2:tcp://localhost:9092/mem:sdec
 
 ### License
 

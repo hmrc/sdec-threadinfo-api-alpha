@@ -1,32 +1,31 @@
 # --- !Ups
 
-INSERT INTO sdec_staff (id, pid, name)
+INSERT INTO sdec_staff (pid, name)
 VALUES
-    (1, 1001, 'John Test'),
-    (2, 1002, 'James Brown'),
-    (3, 1003, 'Jane Doe'),
-    (4, 1004, 'Mary Lamb'),
-    (5, 123456, 'VAT Success Test User');
+    (1001, 'John Test'),
+    (1002, 'James Brown'),
+    (1003, 'Jane Doe'),
+    (1004, 'Mary Lamb'),
+    (123456, 'VAT Success Test User');
 
-INSERT INTO sdec_team (id, srs_name, is_task_based)
-VALUES (1, 'child_benefit', true),
-       (2, 'vat', false),
-       (3, 'audit', false);
+INSERT INTO sdec_team (srs_name, is_task_based)
+VALUES ('child_benefit', true),
+       ('vat', false),
+       ('audit', false);
 
-INSERT INTO staff_role (id, staff_id, team_id, srs_role)
-VALUES (1, 1, 1, 'SDEC_Child_Benefit_Manager'),
-       (2, 2, 1, 'SDEC_Child_Benefit_User'),
-       (3, 3, 2, 'SDEC_VAT_Manager'),
-       (4, 4, 3, 'SDEC_Audit_User'),
+INSERT INTO staff_role (staff_id, team_id, srs_role)
+VALUES (1, 1, 'SDEC_Child_Benefit_Manager'),
+       (2, 1, 'SDEC_Child_Benefit_User'),
+       (3, 2, 'SDEC_VAT_Manager'),
+       (4, 3, 'SDEC_Audit_User'),
 
-        -- Success scenario from Stride stub
-       (5, 5, 2, 'SDEC_VAT_User');
+       -- Success scenario
+       (5, 2, 'SDEC_VAT_User');
 
-INSERT INTO sdec_recipient (id, internal_id, first_name, last_name, email, phone_number, nino)
-VALUES (1, '12345', 'John', 'Smith', 'user@test.com', NULL, 'WM111111D');
+INSERT INTO sdec_recipient (internal_id, first_name, last_name, email, phone_number, nino)
+VALUES ('12345', 'John', 'Smith', 'user@test.com', NULL, 'WM111111D');
 
-INSERT INTO sdec_thread (id,
-                         reference,
+INSERT INTO sdec_thread (reference,
                          status,
                          created_by,
                          created_timestamp,
@@ -38,7 +37,7 @@ INSERT INTO sdec_thread (id,
                          nino,
                          message,
                          required_by)
-VALUES (1,
+VALUES (
         'THREAD1000AA',
         'Active',
         1,
@@ -52,7 +51,7 @@ VALUES (1,
         'Where are the files?',
         NULL),
 
-       (2,
+       (
         'THREAD2000BB',
         'Draft',
         3,
