@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
+package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
-import play.api.libs.json.{Json, OFormat}
+import scala.concurrent.Future
 
-case class SDECStaff(
-  id:   Long,
-  pid:  String,
-  name: String
-)
-
-object SDECStaff {
-  given OFormat[SDECStaff] = Json.format[SDECStaff]
+trait StaffServiceAlgebra {
+  def validateAccess(pid: String, role: String): Future[Boolean]
 }

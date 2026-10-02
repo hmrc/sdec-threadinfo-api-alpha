@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json}
 
-case class SDECStaff(
-  id:   Long,
-  pid:  String,
-  name: String
+final case class StaffAccessResponse(
+  authorised: Boolean
 )
 
-object SDECStaff {
-  given OFormat[SDECStaff] = Json.format[SDECStaff]
+object StaffAccessResponse {
+  given format: Format[StaffAccessResponse] = Json.format[StaffAccessResponse]
 }

@@ -5,18 +5,22 @@ VALUES
     (1001, 'John Test'),
     (1002, 'James Brown'),
     (1003, 'Jane Doe'),
-    (1004, 'Mary Lamb');
+    (1004, 'Mary Lamb'),
+    (123456, 'VAT Success Test User');
 
 INSERT INTO sdec_team (srs_name, is_task_based)
-VALUES ( 'child_benefit', true),
-       ( 'vat', false);
+VALUES ('Child_Benefit', true),
+       ('VAT', false),
+       ('Audit', false);
 
-INSERT INTO staff_role ( staff_id, team_id, srs_role)
-VALUES (1, 1, 'caseworker'),
-       (1, 2, 'supervisor'),
-       (2, 1, 'caseworker'),
-       (3, 2, 'supervisor'),
-       (4, 1, 'supervisor');
+INSERT INTO staff_role (staff_id, team_id, srs_role)
+VALUES (1, 1, 'Manager'),
+       (2, 1, 'User'),
+       (3, 2, 'Manager'),
+       (4, 3, 'User'),
+
+       -- Success scenario
+       (5, 2, 'User');
 
 INSERT INTO sdec_recipient (internal_id, first_name, last_name, email, phone_number, nino)
 VALUES ('12345', 'John', 'Smith', 'user@test.com', NULL, 'WM111111D');
