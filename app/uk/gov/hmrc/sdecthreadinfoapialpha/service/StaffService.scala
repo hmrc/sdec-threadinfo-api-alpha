@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.{SDECStaffRepositoryAlgebra, StaffRoleRepositoryAlgebra}
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.{SDECStaffRepositoryAlgebra, SDECTeamRepositoryAlgebra, StaffRoleRepositoryAlgebra}
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SRSRole
 
 import javax.inject.{Inject, Singleton}
@@ -25,30 +25,55 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class StaffService @Inject() (
   staffRepository:     SDECStaffRepositoryAlgebra,
-  staffRoleRepository: StaffRoleRepositoryAlgebra
+  staffRoleRepository: StaffRoleRepositoryAlgebra,
+  teamRepository:      SDECTeamRepositoryAlgebra
 )(using ExecutionContext)
     extends StaffServiceAlgebra {
+
+  private val RolePattern = "^SDEC_(.+)_(User|Manager)$".r
 
   override def validateAccess(
     pid:  String,
     role: String
   ): Future[Boolean] =
 
-    SRSRole.values.find(_.toString == role) match {
+    role match {
 
-      case Some(requestedRole) =>
-        staffRepository.findByPid(pid).flatMap {
+      case RolePattern(teamName, roleName) =>
 
-          case Some(staff) =>
-            staffRoleRepository
-              .findByStaffId(staff.id)
-              .map(_.exists(_.srsRole == requestedRole))
+        SRSRole.values.find(_.toString == roleName) match {
+
+          case Some(requestedRole) =>
+
+            staffRepository.findByPid(pid).flatMap {
+
+              case Some(staff) =>
+
+                teamRepository.findBySrsName(teamName).flatMap {
+
+                  case Some(team) =>
+
+                    staffRoleRepository
+                      .findByStaffId(staff.id)
+                      .map { staffRoles =>
+                        staffRoles.exists { staffRole =>
+                          staffRole.teamId == team.id &&
+                          staffRole.srsRole == requestedRole
+                        }
+                      }
+
+                  case None =>
+                    Future.successful(false)
+                }
+              case None =>
+                Future.successful(false)
+            }
 
           case None =>
             Future.successful(false)
         }
 
-      case None =>
+      case _ =>
         Future.successful(false)
     }
 }
