@@ -6,4 +6,6 @@ GET         /threads                           uk.gov.hmrc.sdecthreadinfoapialph
 
 POST        /thread-create                     uk.gov.hmrc.sdecthreadinfoapialpha.controllers.ThreadCreateController.createThread()
 
+GET         /staff/:pid/teams                  uk.gov.hmrc.sdecthreadinfoapialpha.controllers.TeamController.findTeamsByPid(pid: String)
+
 POST        /workspace                         uk.gov.hmrc.sdecthreadinfoapialpha.controllers.internal.StaffController.validateAccess()

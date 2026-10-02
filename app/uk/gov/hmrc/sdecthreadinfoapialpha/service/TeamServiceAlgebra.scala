@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
+package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
-import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.Team
 
-final case class CreateThreadRequest(
-  creatorPid:       String,
-  creatorName:      Option[String],
-  owningTeam:       Team,
-  recipientDetails: RecipientDetails,
-  threadDetails:    ThreadDetails
-)
+import scala.concurrent.Future
 
-object CreateThreadRequest {
-  given OFormat[CreateThreadRequest] = Json.format[CreateThreadRequest]
+trait TeamServiceAlgebra {
+  def findTeamsByPid(pid: String): Future[Seq[Team]]
 }

@@ -19,7 +19,6 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.stubs
 import com.github.blemale.scaffeine.{Cache, Scaffeine}
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.{StaffNotFoundException, ThreadReferenceNotFoundException}
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECStaffRepositoryAlgebra
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.*
 import uk.gov.hmrc.sdecthreadinfoapialpha.repository.ThreadReferenceRepositoryAlgebra
 

@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
+package uk.gov.hmrc.sdecthreadinfoapialpha.exceptions
 
-import play.api.libs.json.{Json, OFormat}
-
-final case class CreateThreadRequest(
-  creatorPid:       String,
-  creatorName:      Option[String],
-  owningTeam:       Team,
-  recipientDetails: RecipientDetails,
-  threadDetails:    ThreadDetails
-)
-
-object CreateThreadRequest {
-  given OFormat[CreateThreadRequest] = Json.format[CreateThreadRequest]
-}
+final case class TeamRetrievalException(cause: Throwable) extends RuntimeException("Failed to retrieve teams", cause)

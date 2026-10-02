@@ -17,7 +17,6 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadStatus.Draft
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECStaff, SDECThread}
 

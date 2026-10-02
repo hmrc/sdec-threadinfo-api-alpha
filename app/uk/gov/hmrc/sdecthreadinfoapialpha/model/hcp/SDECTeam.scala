@@ -18,7 +18,7 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp
 
 import play.api.libs.json.{Json, OFormat}
 
-case class SDECTeam(id: Long, srsName: String, isTaskBased: Boolean = false)
+final case class SDECTeam(id: Long, srsName: String, isTaskBased: Boolean = false)
 
 object SDECTeam {
   given OFormat[SDECTeam] = Json.format[SDECTeam]

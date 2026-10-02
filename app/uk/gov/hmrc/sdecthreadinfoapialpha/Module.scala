@@ -26,7 +26,7 @@ import uk.gov.hmrc.sdecthreadinfoapialpha.stubs.ThreadReferenceRepository
 
 import java.time.Clock
 
-class Module extends AppModule:
+class Module extends AppModule {
 
   override def bindings(
     environment:   Environment,
@@ -39,6 +39,7 @@ class Module extends AppModule:
       bind[StaffRoleRepositoryAlgebra].to[StaffRoleRepository],
       bind[SDECRecipientRepositoryAlgebra].to[SDECRecipientRepository],
       bind[SDECThreadRepositoryAlgebra].to[SDECThreadRepository],
+      bind[TeamServiceAlgebra].to[TeamService],
       bind[ThreadServiceAlgebra].to[ThreadService],
       bind[ThreadReferenceServiceAlgebra].to[ThreadReferenceService],
       bind[ThreadSummaryServiceAlgebra].to[ThreadSummaryService],
@@ -46,3 +47,5 @@ class Module extends AppModule:
       bind[StaffServiceAlgebra].to[StaffService],
       bind[H2Server].toSelf.eagerly()
     )
+
+}
