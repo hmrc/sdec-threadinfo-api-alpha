@@ -17,17 +17,22 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.stubs
 
 import com.github.blemale.scaffeine.{Cache, Scaffeine}
-import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.ThreadReferenceNotFoundException
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, RecipientDetails, ThreadDetails, ThreadReference, ThreadStatus}
+import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.{StaffNotFoundException, ThreadReferenceNotFoundException}
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECStaffRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.*
 import uk.gov.hmrc.sdecthreadinfoapialpha.repository.ThreadReferenceRepositoryAlgebra
 
 import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
-import javax.inject.Singleton
-import scala.concurrent.Future
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
+class ThreadReferenceRepository @Inject() (
+  staffRepository: SDECStaffRepositoryAlgebra
+)(using ExecutionContext)
+    extends ThreadReferenceRepositoryAlgebra {
 
   private val threadReferenceCache: Cache[String, ThreadReference] = Scaffeine()
     .build[String, ThreadReference]()
@@ -43,6 +48,9 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         lastUpdatedTimeStamp = LocalDateTime.now().minusHours(3),
         threadExpiryDate = LocalDate.now().plusDays(28),
         associatedCaseReference = "CASE-001",
+        createdBy = StaffDetails(1L, "PID001", "John Test"),
+        threadOwner = Some(StaffDetails(1L, "PID001", "John Test")),
+        owningTeam = Team("Team A", taskBased = true),
         recipientDetails = RecipientDetails(
           firstName = "John",
           lastName = "Smith",
@@ -67,6 +75,9 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         lastUpdatedTimeStamp = LocalDateTime.now().minusHours(3),
         threadExpiryDate = LocalDate.now().plusDays(28),
         associatedCaseReference = "CASE-002",
+        createdBy = StaffDetails(2L, "PID002", "James Brown"),
+        threadOwner = None,
+        owningTeam = Team("Team B", taskBased = false),
         recipientDetails = RecipientDetails(
           firstName = "",
           lastName = "",
@@ -96,30 +107,28 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
         Future.failed(ThreadReferenceNotFoundException(id))
       )(Future.successful)
 
-  override def createThread(request: CreateThreadRequest): Future[ThreadReference] = {
+  def createThread(request: CreateThreadRequest): Future[ThreadReference] =
+    staffRepository.findByPid(request.creatorPid).flatMap {
+      case None        => Future.failed(StaffNotFoundException(request.creatorPid))
+      case Some(staff) =>
+        val creator = StaffDetails.fromEntity(staff)
+        val now     = LocalDateTime.now()
 
-    val generatedThreadReference =
-      UUID.randomUUID().toString.replace("-", "").take(12).toUpperCase
+        val threadReference = ThreadReference(
+          id = UUID.randomUUID().toString.replace("-", "").take(12).toUpperCase,
+          status = ThreadStatus.Active,
+          createdTimeStamp = now,
+          lastUpdatedTimeStamp = now,
+          threadExpiryDate = request.threadDetails.responseDate,
+          associatedCaseReference = request.recipientDetails.caseReferenceNumber.getOrElse(""),
+          createdBy = creator,
+          threadOwner = Option.when(request.owningTeam.taskBased)(creator),
+          owningTeam = request.owningTeam,
+          recipientDetails = request.recipientDetails,
+          threadDetails = request.threadDetails
+        )
 
-    val now = LocalDateTime.now()
-
-    val threadReference =
-      ThreadReference(
-        id = generatedThreadReference,
-        status = ThreadStatus.Active,
-        createdTimeStamp = now,
-        lastUpdatedTimeStamp = now,
-        threadExpiryDate = request.threadDetails.responseDate,
-        associatedCaseReference = request.recipientDetails.caseReferenceNumber.getOrElse(""),
-        request.recipientDetails,
-        request.threadDetails
-      )
-
-    threadReferenceCache.put(
-      threadReference.id,
-      threadReference
-    )
-
-    Future.successful(threadReference)
-  }
+        threadReferenceCache.put(threadReference.id, threadReference)
+        Future.successful(threadReference)
+    }
 }

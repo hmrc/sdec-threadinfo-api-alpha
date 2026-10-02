@@ -17,11 +17,12 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
 import play.api.Logging
-import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.InvalidThreadReferenceException
-import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.{SDECRecipientRepositoryAlgebra, SDECThreadRepositoryAlgebra}
+import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.{InvalidThreadReferenceException, StaffNotFoundException}
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.{SDECRecipientRepositoryAlgebra, SDECStaffRepositoryAlgebra, SDECThreadRepositoryAlgebra}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, RecipientDetails, ThreadDetails, ThreadReference}
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadStatus.Active
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECThread}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECStaff, SDECThread}
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.requests.ExternalUser
 
 import java.time.{LocalDate, LocalDateTime}
@@ -32,7 +33,8 @@ import scala.util.Random
 @Singleton
 class ThreadReferenceService @Inject() (
   threadRepository:    SDECThreadRepositoryAlgebra,
-  recipientRepository: SDECRecipientRepositoryAlgebra
+  recipientRepository: SDECRecipientRepositoryAlgebra,
+  staffRepository:     SDECStaffRepositoryAlgebra
 )(using ec: ExecutionContext)
     extends ThreadReferenceServiceAlgebra
     with Logging {
@@ -46,28 +48,35 @@ class ThreadReferenceService @Inject() (
         threadOption <- threadRepository.findByReference(threadId)
         recipientId = getRecipientIdFromThread(threadOption)
         recipientOption <- getOrStoreRecipient(recipientId, externalUser)
-      } yield convertEntityToDTO(threadOption, recipientOption)
+        dto             <- convertEntityToDTO(threadOption, recipientOption)
+      } yield dto
     } else {
       Future.failed(InvalidThreadReferenceException(threadId))
     }
   }
 
-  override def createThread(request: CreateThreadRequest, externalUser: ExternalUser): Future[ThreadReference] = {
-    val thread = getThreadFromRequest(request.recipientDetails, request.threadDetails)
+  override def createThread(request: CreateThreadRequest, externalUser: ExternalUser): Future[ThreadReference] =
     for {
+      creator        <- findOrCreateStaff(request.creatorPid, request.creatorName)
       savedRecipient <- getOrStoreRecipient(None, externalUser)
+      thread     = getThreadFromRequest(creator.id, request.owningTeam, request.recipientDetails, request.threadDetails)
       sdecthread = thread.copy(recipientId = savedRecipient.map(_.id))
       threadId    <- threadRepository.insert(sdecthread)
       savedThread <- threadRepository.findById(threadId)
-    } yield convertEntityToDTO(savedThread, savedRecipient)
-  }
+      dto         <- convertEntityToDTO(savedThread, savedRecipient)
+    } yield dto
 
-  private def getThreadFromRequest(recipient: RecipientDetails, thread: ThreadDetails): SDECThread =
+  private def getThreadFromRequest(
+    creatorId: Long,
+    team:      Team,
+    recipient: RecipientDetails,
+    thread:    ThreadDetails
+  ): SDECThread =
     SDECThread(
       id = 0L,
       reference = Random.alphanumeric.take(12).mkString.toUpperCase,
       status = Active,
-      createdBy = Random.between(1L, 5L),
+      createdBy = creatorId,
       createdTimeStamp = LocalDateTime.now(),
       lastUpdatedTimeStamp = LocalDateTime.now(),
       threadExpiryDate = LocalDate.now.plusMonths(3L),
@@ -76,8 +85,31 @@ class ThreadReferenceService @Inject() (
       email = recipient.email,
       nino = Some(recipient.nationalInsuranceNumber),
       message = thread.message,
-      requiredBy = Some(thread.responseDate)
+      requiredBy = Some(thread.responseDate),
+      threadOwnerId = Option.when(team.taskBased)(creatorId),
+      owningTeamName = team.name,
+      owningTeamType = team.taskBased
     )
+
+  private def findOrCreateStaff(pid: String, name: Option[String]): Future[SDECStaff] =
+    staffRepository.findByPid(pid).flatMap {
+      case Some(staff) => Future.successful(staff)
+      case None        =>
+        val newStaff = SDECStaff(0L, pid, name.filter(_.trim.nonEmpty).getOrElse("Unknown"))
+        staffRepository.insert(newStaff).map(id => newStaff.copy(id = id))
+    }
+
+  private def findStaffById(id: Long): Future[SDECStaff] =
+    staffRepository.findById(id).flatMap {
+      case Some(staff) => Future.successful(staff)
+      case None        => Future.failed(StaffNotFoundException(id.toString))
+    }
+
+  private def findOwner(ownerId: Option[Long]): Future[Option[SDECStaff]] =
+    ownerId match {
+      case Some(id) => findStaffById(id).map(Some(_))
+      case None     => Future.successful(None)
+    }
 
   private def getRecipientIdFromThread(maybeThread: Option[SDECThread]): Option[Long] =
     maybeThread match {
@@ -100,15 +132,15 @@ class ThreadReferenceService @Inject() (
     }
 
   private def convertEntityToDTO(
-    maybeThread:  Option[SDECThread],
-    maybeDetails: Option[SDECRecipient]
-  ): ThreadReference =
-    (maybeThread, maybeDetails) match
-      case (Some(t), Some(r)) =>
-        ThreadReference.convertFromEntities(t, r)
-      case (Some(t), None) =>
-        ThreadReference.convertFromThreadEntity(t)
-      case (_, _) =>
-        ThreadReference.getEmptyThread()
-
+    maybeThread:    Option[SDECThread],
+    maybeRecipient: Option[SDECRecipient]
+  ): Future[ThreadReference] =
+    maybeThread match {
+      case None         => Future.successful(ThreadReference.getEmptyThread)
+      case Some(thread) =>
+        for {
+          creator <- findStaffById(thread.createdBy)
+          owner   <- findOwner(thread.threadOwnerId)
+        } yield ThreadReference.convertFromEntities(thread, maybeRecipient, creator, owner)
+    }
 }
