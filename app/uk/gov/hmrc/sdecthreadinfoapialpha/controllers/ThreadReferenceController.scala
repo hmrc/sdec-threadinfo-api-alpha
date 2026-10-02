@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.controllers
 
-import jakarta.inject.Inject
 import play.api.Logging
 import play.api.libs.json.*
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
@@ -25,7 +24,7 @@ import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.{InvalidThreadReferenceExce
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.requests.ExternalUser
 import uk.gov.hmrc.sdecthreadinfoapialpha.service.ThreadReferenceServiceAlgebra
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton

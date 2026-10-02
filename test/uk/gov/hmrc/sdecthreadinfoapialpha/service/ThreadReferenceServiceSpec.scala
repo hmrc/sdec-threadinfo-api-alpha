@@ -24,8 +24,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, RecipientDetails, ThreadDetails}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, RecipientDetails, Team, ThreadDetails}
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECStaff, SDECThread}
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.requests.ExternalUser
 

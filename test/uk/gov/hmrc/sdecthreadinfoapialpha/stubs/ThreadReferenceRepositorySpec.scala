@@ -22,8 +22,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECStaffRepositoryAlgebra
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.*
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, RecipientDetails, StaffDetails, ThreadDetails, ThreadReference}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.*
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECStaff
 
 import java.time.LocalDate

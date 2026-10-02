@@ -1,3 +1,4 @@
+import play.sbt.routes.RoutesKeys
 import uk.gov.hmrc.DefaultBuildSettings
 
 val appName = "sdec-threadinfo-api-alpha"
@@ -12,33 +13,32 @@ lazy val compilerSettings = Seq(
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
-  .disablePlugins(
-    JUnitXmlReportPlugin
-  )
+  .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     Compile / scalafmtOnCompile := true,
     Test / scalafmtOnCompile := true,
     PlayKeys.playDefaultPort := 4501,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
-    compilerSettings
-  )
-  .settings(
+    compilerSettings,
+    RoutesKeys.routesImport ++= Seq(
+      "uk.gov.hmrc.sdecthreadinfoapialpha.model.query.ThreadSummaryQuery"
+    ),
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
     Test / unmanagedSourceDirectories := (Test / baseDirectory)(base => Seq(base / "test", base / "test-common")).value,
     Test / unmanagedResourceDirectories := Seq(
       baseDirectory.value / "test-resources"
-    )
+    ),
+    CodeCoverageSettings.settings
   )
-  .settings(CodeCoverageSettings.settings: _*)
 
 lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
   .settings(
     DefaultBuildSettings.itSettings(),
-    compilerSettings
+    compilerSettings,
+    libraryDependencies ++= AppDependencies.it
   )
-  .settings(libraryDependencies ++= AppDependencies.it)
 
 inThisBuild(
   List(

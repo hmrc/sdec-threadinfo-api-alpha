@@ -19,8 +19,7 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.service
 import play.api.Logging
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.{InvalidThreadReferenceException, StaffNotFoundException}
 import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.{SDECRecipientRepositoryAlgebra, SDECStaffRepositoryAlgebra, SDECThreadRepositoryAlgebra}
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.Team
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, RecipientDetails, ThreadDetails, ThreadReference}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, RecipientDetails, Team, ThreadDetails, ThreadReference}
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadStatus.Active
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.{SDECRecipient, SDECStaff, SDECThread}
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.requests.ExternalUser

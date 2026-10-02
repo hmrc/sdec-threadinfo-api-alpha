@@ -26,6 +26,8 @@ trait SDECTeamRepositoryAlgebra {
 
   def findBySrsName(srsName: String): Future[Option[SDECTeam]]
 
+  def findByPid(pid: String): Future[Seq[SDECTeam]]
+
   def findAll(): Future[Seq[SDECTeam]]
 
   def insert(team: SDECTeam): Future[Long]
