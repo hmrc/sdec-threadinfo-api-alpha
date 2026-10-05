@@ -6,7 +6,8 @@ VALUES
     (1002, 'James Brown'),
     (1003, 'Jane Doe'),
     (1004, 'Mary Lamb'),
-    (123456, 'VAT Success Test User');
+    (123456, 'VAT Success Test User'),
+    ('pid-pen-001', 'John Smith');
 
 INSERT INTO sdec_team (srs_name, is_task_based)
 VALUES ('Child_Benefit', true),
@@ -20,7 +21,10 @@ VALUES (1, 1, 'Manager'),
        (4, 3, 'User'),
 
        -- Success scenario
-       (5, 2, 'User');
+       (5, 2, 'User'),
+
+       -- Owns THREAD4000DD and THREAD7000GG in ThreadSummaryRepository stub
+       (6, 2, 'User');
 
 INSERT INTO sdec_recipient (internal_id, first_name, last_name, email, phone_number, nino)
 VALUES ('12345', 'John', 'Smith', 'user@test.com', NULL, 'WM111111D');

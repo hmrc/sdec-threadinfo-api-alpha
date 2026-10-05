@@ -51,6 +51,15 @@ class SDECTeamRepository @Inject() (
         .headOption
     )
 
+  def findByPid(pid: String): Future[Seq[SDECTeam]] =
+    db.run(
+      (for {
+        staff     <- SDECTables.sdecStaff if staff.pid === pid
+        staffRole <- SDECTables.staffRoles if staffRole.staffId === staff.id
+        team      <- SDECTables.sdecTeams if team.id === staffRole.teamId
+      } yield team).result
+    )
+
   def findAll(): Future[Seq[SDECTeam]] =
     db.run(
       sdecTeams.result

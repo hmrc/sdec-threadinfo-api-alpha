@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapialpha.model
+package uk.gov.hmrc.sdecthreadinfoapialpha.model.dto
 
 import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECTeam
 
 final case class Team(name: String, taskBased: Boolean)
 
 object Team {
   given Format[Team] = Json.format[Team]
+
+  def fromEntity(team: SDECTeam): Team =
+    Team(name = team.srsName, taskBased = team.isTaskBased)
 }

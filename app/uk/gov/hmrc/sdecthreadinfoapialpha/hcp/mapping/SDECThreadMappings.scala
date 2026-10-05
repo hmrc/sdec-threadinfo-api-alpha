@@ -19,7 +19,7 @@ package uk.gov.hmrc.sdecthreadinfoapialpha.hcp.mapping
 import slick.jdbc.H2Profile.api.*
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.hcp.SDECThreadStatus
 
-object SDECThreadMappings:
+object SDECThreadMappings {
 
   given BaseColumnType[SDECThreadStatus] =
     MappedColumnType.base[SDECThreadStatus, String](
@@ -33,3 +33,5 @@ object SDECThreadMappings:
             )
           )
     )
+
+}

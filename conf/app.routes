@@ -1,9 +1,11 @@
 # microservice specific routes
 
-GET        /thread-reference/:threadId  uk.gov.hmrc.sdecthreadinfoapialpha.controllers.ThreadReferenceController.getThreadReference(threadId: String)
+GET         /thread-reference/:threadId        uk.gov.hmrc.sdecthreadinfoapialpha.controllers.ThreadReferenceController.getThreadReference(threadId: String)
 
-GET        /threads        uk.gov.hmrc.sdecthreadinfoapialpha.controllers.ThreadSummaryController.getAll()
+GET         /threads                           uk.gov.hmrc.sdecthreadinfoapialpha.controllers.ThreadSummaryController.getAll(query: ThreadSummaryQuery)
 
-POST       /thread-create  uk.gov.hmrc.sdecthreadinfoapialpha.controllers.ThreadCreateController.createThread()
+POST        /thread-create                     uk.gov.hmrc.sdecthreadinfoapialpha.controllers.ThreadCreateController.createThread()
 
-POST       /workspace      uk.gov.hmrc.sdecthreadinfoapialpha.controllers.internal.StaffController.validateAccess()
+GET         /staff/:pid/teams                  uk.gov.hmrc.sdecthreadinfoapialpha.controllers.TeamController.findTeamsByPid(pid: String)
+
+POST        /workspace                         uk.gov.hmrc.sdecthreadinfoapialpha.controllers.internal.StaffController.validateAccess()

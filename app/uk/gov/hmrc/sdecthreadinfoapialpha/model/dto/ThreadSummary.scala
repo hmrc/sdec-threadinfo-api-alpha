@@ -26,10 +26,10 @@ final case class ThreadSummary(
   externalContact:  String,
   status:           String,
   waitingOn:        String,
-  deadline:         Option[LocalDate]
+  deadline:         Option[LocalDate],
+  threadOwner:      Option[String]
 )
 
 object ThreadSummary {
-  implicit val format: OFormat[ThreadSummary] =
-    Json.format[ThreadSummary]
+  given format: OFormat[ThreadSummary] = Json.format[ThreadSummary]
 }

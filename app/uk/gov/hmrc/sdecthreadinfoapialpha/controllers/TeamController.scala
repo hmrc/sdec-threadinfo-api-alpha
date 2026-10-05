@@ -20,31 +20,27 @@ import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.ThreadSummaryRetrievalException
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.query.ThreadSummaryQuery
-import uk.gov.hmrc.sdecthreadinfoapialpha.service.ThreadSummaryServiceAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.TeamRetrievalException
+import uk.gov.hmrc.sdecthreadinfoapialpha.service.TeamServiceAlgebra
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ThreadSummaryController @Inject() (
-  cc:                   ControllerComponents,
-  threadSummaryService: ThreadSummaryServiceAlgebra
-)(using ec: ExecutionContext)
+class TeamController @Inject() (
+  cc:          ControllerComponents,
+  teamService: TeamServiceAlgebra
+)(using ExecutionContext)
     extends BackendController(cc)
     with Logging {
 
-  def getAll(query: ThreadSummaryQuery): Action[AnyContent] = Action.async {
-    threadSummaryService
-      .getAll(query)
-      .map(threads => Ok(Json.toJson(threads)))
-      .recover { case exception: ThreadSummaryRetrievalException =>
-        logger.error(exception.getMessage, exception)
-
-        InternalServerError(
-          Json.obj("message" -> exception.getMessage)
-        )
+  def findTeamsByPid(pid: String): Action[AnyContent] = Action.async {
+    teamService
+      .findTeamsByPid(pid)
+      .map(teams => Ok(Json.toJson(teams)))
+      .recover { case exception: TeamRetrievalException =>
+        logger.warn(s"Team retrieval for $pid failed")
+        InternalServerError(Json.obj("message" -> exception.getMessage))
       }
   }
 

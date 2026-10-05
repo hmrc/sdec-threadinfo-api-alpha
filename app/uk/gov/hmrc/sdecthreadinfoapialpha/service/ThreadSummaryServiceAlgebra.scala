@@ -17,11 +17,12 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadSummary
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.query.ThreadSummaryQuery
 
 import scala.concurrent.Future
 
 trait ThreadSummaryServiceAlgebra {
 
-  def getAll: Future[Seq[ThreadSummary]]
+  def getAll(query: ThreadSummaryQuery): Future[Seq[ThreadSummary]]
 
 }

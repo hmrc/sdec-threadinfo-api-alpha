@@ -17,27 +17,27 @@
 package uk.gov.hmrc.sdecthreadinfoapialpha.service
 
 import play.api.Logging
-import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.ThreadSummaryRetrievalException
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.ThreadSummary
-import uk.gov.hmrc.sdecthreadinfoapialpha.model.query.ThreadSummaryQuery
-import uk.gov.hmrc.sdecthreadinfoapialpha.stubs.ThreadSummaryRepository
+import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.TeamRetrievalException
+import uk.gov.hmrc.sdecthreadinfoapialpha.hcp.repository.SDECTeamRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.Team
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class ThreadSummaryService @Inject() (
-  threadSummaryRepository: ThreadSummaryRepository
+class TeamService @Inject() (
+  teamRepository: SDECTeamRepositoryAlgebra
 )(using ExecutionContext)
-    extends ThreadSummaryServiceAlgebra
+    extends TeamServiceAlgebra
     with Logging {
 
-  override def getAll(query: ThreadSummaryQuery): Future[Seq[ThreadSummary]] =
-    threadSummaryRepository
-      .getAll(query)
+  override def findTeamsByPid(pid: String): Future[Seq[Team]] =
+    teamRepository
+      .findByPid(pid)
+      .map(teams => teams.map(Team.fromEntity))
       .recoverWith { case NonFatal(exception) =>
-        logger.error("Failed to retrieve thread summaries", exception)
-        Future.failed(ThreadSummaryRetrievalException(exception))
+        logger.error("Failed to retrieve teams", exception)
+        Future.failed(TeamRetrievalException(exception))
       }
 }
