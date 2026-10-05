@@ -7,7 +7,7 @@ VALUES
     (1003, 'Jane Doe'),
     (1004, 'Mary Lamb'),
     (123456, 'VAT Success Test User'),
-    ('pid-pen-001', 'Threads Test User');
+    ('pid-pen-001', 'John Smith');
 
 INSERT INTO sdec_team (srs_name, is_task_based)
 VALUES ('Child_Benefit', true),
