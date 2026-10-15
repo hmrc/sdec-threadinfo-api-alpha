@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.controllers.action
 
-import play.api.mvc.*
 import play.api.Logging
+import play.api.mvc.*
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
