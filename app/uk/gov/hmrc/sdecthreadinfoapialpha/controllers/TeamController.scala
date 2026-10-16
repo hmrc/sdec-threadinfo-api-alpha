@@ -20,6 +20,7 @@ import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import uk.gov.hmrc.sdecthreadinfoapialpha.controllers.action.AuthAction
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.TeamRetrievalException
 import uk.gov.hmrc.sdecthreadinfoapialpha.service.TeamServiceAlgebra
 
@@ -29,12 +30,13 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class TeamController @Inject() (
   cc:          ControllerComponents,
+  identity:    AuthAction,
   teamService: TeamServiceAlgebra
 )(using ExecutionContext)
     extends BackendController(cc)
     with Logging {
 
-  def findTeamsByPid(pid: String): Action[AnyContent] = Action.async {
+  def findTeamsByPid(pid: String): Action[AnyContent] = identity.async {
     teamService
       .findTeamsByPid(pid)
       .map(teams => Ok(Json.toJson(teams)))

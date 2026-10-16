@@ -20,6 +20,7 @@ import play.api.Logging
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import uk.gov.hmrc.sdecthreadinfoapialpha.controllers.action.AuthAction
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{StaffAccessRequest, StaffAccessResponse}
 import uk.gov.hmrc.sdecthreadinfoapialpha.service.StaffServiceAlgebra
 
@@ -28,13 +29,14 @@ import scala.concurrent.ExecutionContext
 
 class StaffController @Inject() (
   cc:           ControllerComponents,
+  identity:     AuthAction,
   staffService: StaffServiceAlgebra
 )(using ec: ExecutionContext)
     extends BackendController(cc)
     with Logging {
 
   def validateAccess(): Action[AnyContent] =
-    Action.async { implicit request =>
+    identity.async { implicit request =>
       request.body.asJson match {
 
         case Some(json) =>

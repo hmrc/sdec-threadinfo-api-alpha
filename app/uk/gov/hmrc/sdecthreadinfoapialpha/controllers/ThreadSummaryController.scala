@@ -20,6 +20,7 @@ import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import uk.gov.hmrc.sdecthreadinfoapialpha.controllers.action.AuthAction
 import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.ThreadSummaryRetrievalException
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.query.ThreadSummaryQuery
 import uk.gov.hmrc.sdecthreadinfoapialpha.service.ThreadSummaryServiceAlgebra
@@ -30,12 +31,13 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ThreadSummaryController @Inject() (
   cc:                   ControllerComponents,
+  identity:             AuthAction,
   threadSummaryService: ThreadSummaryServiceAlgebra
 )(using ec: ExecutionContext)
     extends BackendController(cc)
     with Logging {
 
-  def getAll(query: ThreadSummaryQuery): Action[AnyContent] = Action.async {
+  def getAll(query: ThreadSummaryQuery): Action[AnyContent] = identity.async {
     threadSummaryService
       .getAll(query)
       .map(threads => Ok(Json.toJson(threads)))

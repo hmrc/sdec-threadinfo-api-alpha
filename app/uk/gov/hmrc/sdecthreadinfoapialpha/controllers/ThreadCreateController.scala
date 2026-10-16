@@ -16,8 +16,11 @@
 
 package uk.gov.hmrc.sdecthreadinfoapialpha.controllers
 
+import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.*
+import uk.gov.hmrc.sdecthreadinfoapialpha.controllers.action.AuthAction
+import uk.gov.hmrc.sdecthreadinfoapialpha.exceptions.ThreadCreateException
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.dto.{CreateThreadRequest, CreateThreadResponse}
 import uk.gov.hmrc.sdecthreadinfoapialpha.model.requests.ExternalUser
 import uk.gov.hmrc.sdecthreadinfoapialpha.service.ThreadReferenceServiceAlgebra
@@ -27,12 +30,14 @@ import scala.concurrent.ExecutionContext
 
 class ThreadCreateController @Inject() (
   cc:                     ControllerComponents,
+  identity:               AuthAction,
   threadReferenceService: ThreadReferenceServiceAlgebra
 )(using ec: ExecutionContext)
-    extends AbstractController(cc) {
+    extends AbstractController(cc)
+    with Logging {
 
   def createThread(): Action[CreateThreadRequest] =
-    Action.async(parse.json[CreateThreadRequest]) { request =>
+    identity.async(parse.json[CreateThreadRequest]) { request =>
       threadReferenceService
         .createThread(request.body, ExternalUser.getExternalUserByRecipientDetails(request.body.recipientDetails))
         .map { thread =>
@@ -43,6 +48,13 @@ class ThreadCreateController @Inject() (
                 createdTimeStamp = thread.createdTimeStamp
               )
             )
+          )
+        }
+        .recover { case exception: ThreadCreateException =>
+          logger.error(exception.getMessage, exception)
+
+          InternalServerError(
+            Json.obj("message" -> exception.getMessage)
           )
         }
     }
